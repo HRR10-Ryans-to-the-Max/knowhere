@@ -6,13 +6,12 @@ module.exports = {
     res.render('index');
   },
 
-  createUser: function(req, res, next){
-
-  },
-
-  loginUser: function(req, res, next){
-
+  isLoggedIn: function(req, res, next){
+   if (req.isAuthenticated()) {
+    res.status(200).send(true);
+   } else{
+    res.status(200).send(false);
+   }
   }
-
 
 };
