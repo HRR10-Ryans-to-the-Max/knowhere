@@ -20,7 +20,7 @@ var removeSpace = function(string) {
 		return result;
 	} else {
 		return result;
-	}; 
+	} 
 };
 
 var cleanInput = function(string) {

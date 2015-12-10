@@ -1,1 +1,16 @@
-.center-pills { display: inline-block; }
+.center-pills { 
+  display: inline-block; 
+}
+
+.modal-content {
+  padding: 15px;
+}
+
+.signin {
+  text-align: center;
+}
+
+.exit {
+  float: right;
+}
+

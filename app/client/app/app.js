@@ -4,7 +4,8 @@ angular.module('travel', [
   'travel.hotels',
   'travel.attractions',
   'travel.restaurants',
-  'ngRoute'
+  'ngRoute',
+  'signin'
 ])
 .config(function($routeProvider, $httpProvider) {
   $routeProvider
