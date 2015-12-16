@@ -11,6 +11,12 @@ router.get('/', indexController.getIndex);
 
 router.get('/check', indexController.isLoggedIn);
 
+router.get('/info', indexController.getInfo);
+
+router.get('/groups', indexController.getGroups);
+
+router.get('/favs', indexController.getFavs);
+
 // User sign up
 // curl -H "Content-Type: application/json" -X POST -d '{"username":"testuser", "password":"testpass", "teamname":"my team"}' http://localhost:3000/api/signup
 //router.post('/signup', indexController.createUser);

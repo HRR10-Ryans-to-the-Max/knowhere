@@ -56,10 +56,10 @@ module.exports = function(passport) {
           
             // check to see if theres already a user with that email
             // also check to see if they signed up already with facebook or google
-            if (user && user.oauth === false) {
+            if (user && user.oauth !== true) {
                 cb(null, false, {message: "Username already exists"}); 
             } else { 
-              if (user.oauth === false) { 
+              if (user.oauth !== true) { 
                 // if completely new user
                 // create the user
                 var newUser         = new User();
@@ -80,11 +80,8 @@ module.exports = function(passport) {
                 return cb(null, user);
               }
             }  
-
         });    
-
       });
-
     }));
 
        // =========================================================================
@@ -159,11 +156,8 @@ module.exports = function(passport) {
 
                 });
             }
-
         });    
-
-        });
-     
+      });
     }
   ));
 
@@ -208,15 +202,10 @@ module.exports = function(passport) {
 
                 });
             }
-
         });    
-
-        });
-  }
-));
-
-
-
+      });
+    }
+  ));
 };
 
 

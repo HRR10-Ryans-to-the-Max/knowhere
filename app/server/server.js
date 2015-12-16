@@ -1,18 +1,21 @@
-var bodyParser = require('body-parser');
-var express = require('express');
-var http = require('http');
-var path = require('path');
+var bodyParser   = require('body-parser');
+var express      = require('express');
+var http         = require('http');
+var path         = require('path');
 var cookieParser = require('cookie-parser');
-var passport = require('passport');
-var flash    = require('connect-flash');
-var session  = require('express-session');
-var morgan = require('morgan');
-var cors = require('cors');
+var passport     = require('passport');
+var flash        = require('connect-flash');
+var session      = require('express-session');
+var morgan       = require('morgan');
+var cors         = require('cors');
 
 
 // Server routers:
-var index = require(path.join(__dirname, 'routes/index'));
-var dest = require(path.join(__dirname, 'routes/dest'));
+var index  = require(path.join(__dirname, 'routes/index'));
+var dest   = require(path.join(__dirname, 'routes/dest'));
+var group  = require(path.join(__dirname, 'routes/group'));
+var fav    = require(path.join(__dirname, 'routes/fav'));
+var rating = require(path.join(__dirname, 'routes/rating'));
 
 
 var app = express();
@@ -42,6 +45,9 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // Server routing:
 app.use('/api', index);
 app.use('/api/dest', dest);
+app.use('/api/group', group);
+app.use('/api/fav', fav);
+app.use('/api/rating', rating);
 app.use(cors());
 
 //Authentication Routing

@@ -29,7 +29,20 @@ var userSchema = new Schema ({
 
   oauth: {
     type: Boolean
-  }
+  },
+
+  groupId: [{
+    type: Schema.ObjectId,
+    ref: 'Group'
+  }],
+
+  favorites: [{
+    venue: {
+      type: Schema.ObjectId,
+      ref: 'Venue'
+    },
+    rating: Number
+  }]
 });
 
 userSchema.methods.generateHash = function(password) {
@@ -38,10 +51,62 @@ userSchema.methods.generateHash = function(password) {
 
 // checking if password is valid
 userSchema.methods.validPassword = function(password) {
-    return bcrypt.compareSync(password, this.local.password);
+    return bcrypt.compareSync(password, this.password);
 };
 
 db.userSchema = userSchema;
 
+var groupSchema = new Schema ({
+  title: String,
+  destination: String,
+  host: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
+  members: [{
+    type: Schema.ObjectId,
+    ref: 'User'
+  }],
+  favorites: [{
+    type: Schema.ObjectId,
+    ref: 'Venue'
+  }]
+});
+
+db.groupSchema = groupSchema;
+
+var venueSchema = new Schema ({
+  lookUpId: Number,
+  name: String,
+  venue_type_id: Number,
+  tripexpert_score: Number,
+  rank: Number,
+  score: Number,
+  description: String,
+  photo: String
+});
+
+
+db.venueSchema = venueSchema;
+
+var ratingSchema = new Schema ({
+  venueId: {
+    type: Schema.ObjectId,
+    ref: 'Venue'
+  },
+  groupId: {
+    type: Schema.ObjectId,
+    ref: 'Group'
+  },
+  rating: [{
+    user: {
+      type: Schema.ObjectId,
+      ref: 'User'
+    },
+    rating: Number
+  }] 
+});
+
+db.ratingSchema = ratingSchema;
 
 module.exports = db;

@@ -27,9 +27,9 @@ angular.module('travel.groups', [])
 
   $scope.createGroup = function() {
   	var data = {
-  		groupName: $scope.newGroupInput,
-  		userInfo: $rootScope.currentUser,
-  		destination: Util.transToPermalink($scope.destination)
+  		title: $scope.newGroupInput,
+  		userId: $rootScope.currentUser._id,
+  		dest: Util.transToPermalink($scope.destination)
   	};
   	Groups.createGroup(data);
   	$scope.getGroups();
