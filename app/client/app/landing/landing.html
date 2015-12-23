@@ -1,24 +1,24 @@
 <div class="container">
   <div class="row">
     <div class="col-md-offset-2 col-md-8">
-      <form name="location" ng-submit='sendData()' novalidate>
-        <!-- <div class="form-group">
-          <label for="origin-form">Origin</label>
-          <input name="origin" type="text" class="form-control" id="origin-form" placeholder="From" ng-model="data.origin" required ng-class="{'error': location.$invalid && location.$dirty}">
-        </div> -->
+      <form name="location" ng-submit='sendData(selected)' novalidate>
         <div class="form-group">
           <label for="group-form">Group Name</label>
           <input name="group" type="text" class="form-control" id="group-form" placeholder="Group Name" ng-model="data.group">
         </div>
         <div class="form-group">
           <label for="destination-form">Destination</label>
-          <input name="destination" type="text" class="form-control" id="destination-form" placeholder="To" ng-model="data.destination" required ng-class="{'error': location.$invalid && location.$dirty}">
+          <input type="text" id="destination-form" placeholder="To" ng-model="selected" typeahead-min-length="1"
+          uib-typeahead="(destination.name + ', ' + destination.state + ' ' + destination.country_name.toUpperCase()) for destination in destinations | filter:$viewValue | limitTo:8"
+          class="form-control" autocomplete="off" typeahead-on-select="sendDestination($item)">
+
+          <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+          <div ng-show="noResults">
+            <i class="glyphicon glyphicon-remove"></i> No Results Found
+          </div>
         </div>
         <button type="submit" class="btn btn-default" ng-disabled="location.$invalid">Submit</button>
       </form>
-<!--       <div ng-if='location.origin.$error.required && location.$dirty'>
-        <h2> Please enter an origin </h2>
-      </div> -->
       <div ng-if='location.destination.$error.required && location.$dirty'>
         <h2> Please enter a destination </h2>
       </div>

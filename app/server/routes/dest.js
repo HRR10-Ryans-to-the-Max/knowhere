@@ -4,7 +4,7 @@ var router = express.Router();
 var destController = require('../controllers/destController');
 
 
-router.get('/', destController.getDestination);
+router.get('/', destController.getDestinations);
 
 router.get('/venues', destController.getVenues);
 

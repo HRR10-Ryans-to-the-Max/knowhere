@@ -127,32 +127,6 @@ angular.module('travel.services', [])
 })
 
 
-////////////////// CITY //////////////////////
-
-
-.factory('City', function ($http) {
-
-  /*
-    @param {object} query has:
-      @prop {str} permalink
-  */
-  var getCity = function(query){
-    return $http({
-      method: 'GET',
-      url: '/api/dest',
-      params: query
-    })
-    .then(function(resp){
-      return resp.data;
-    });
-  };
-
-  return {
-    getCity: getCity
-  };
-})
-
-
 ////////////////// UTIL //////////////////////
 
 
@@ -178,6 +152,16 @@ angular.module('travel.services', [])
 
   ////////////////// PLACES TO EXPLORE //////////////////////
 
+  var getAllDestinations = function () {
+    return $http({
+      method: 'GET',
+      url: '/api/dest/',
+      params: { limit: 375 }
+    }).then(function(res) {
+      console.log(res.data.response.destinations);
+      return res.data.response.destinations;
+    });
+  };
 
   /*
     @params {object} query has:
@@ -324,6 +308,7 @@ angular.module('travel.services', [])
 
 
   return {
+    getAllDestinations: getAllDestinations,
     getVenues: getVenues,
     getUserFavorites: getUserFavorites,
     addToUserFavorites: addToUserFavorites,

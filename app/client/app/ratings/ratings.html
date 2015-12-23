@@ -25,19 +25,37 @@
       <h2 class="text-center">{{ heading }}</h2>
     </div>
 
-    <h1 class="text-center" ng-if="filteredGroupRatings.length < 1">
+    <h1 class="text-center" ng-if="filteredGroupRatings.length < 1 && filteredUserRatings.length < 1">
       You current do not have anything to rate!
     </h1>
-    <div class="row" class="text-center">
-      <div ng-repeat="venue in filteredGroupRatings" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail" >
+    <div class="row" class="text-center ">
+      <h3 class="text-center"> User Ratings </h3>
+      <div ng-repeat="venue in filteredUserRatings track by $index" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail" >
         <div class="venue-info">
-          <img class="venue-thumbnail" ng-src="{{ venue.index_photo }}" alt="photo: {{ venue.name }}">
+          <img class="venue-thumbnail" ng-src="{{ venue.venue.index_photo }}" alt="photo: {{ venue.venue.name }}">
           <div class="caption">
             <div class="title">
-              <h4>{{ venue.name }}</h4>
+              <h4>{{ venue.venue.name }}</h4>
             </div>
-            <span>Select your rating <br> {{venue.userRating}} out of 10
-              <div star-rating rating-value="venue.userRating" max="10" on-rating-selected="addRating(venue, venue.userRating)"></div>
+            <span>Select your rating <br> {{venue.currentUserRating.userRating}} out of 10
+              <div star-rating rating-value="venue.currentUserRating.userRating" max="10" on-rating-selected="addRating(venue.venue, venue.currentUserRating.userRating)"></div>
+            </span>
+            <button class="btn btn-primary" type="button" name="button">More Info</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" class="text-center">
+      <h3 class="text-center"> Group Ratings </h3>
+      <div ng-repeat="venue in filteredGroupRatings" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail" >
+        <div class="venue-info">
+          <img class="venue-thumbnail" ng-src="{{ venue.venue.index_photo }}" alt="photo: {{ venue.venue.name }}">
+          <div class="caption">
+            <div class="title">
+              <h4>{{ venue.venue.name }}</h4>
+            </div>
+            <span>Select your rating <br> {{venue.venue.userRating}} out of 10
+              <div star-rating rating-value="venue.venue.userRating" max="10" on-rating-selected="addRating(venue.venue, venue.venue.userRating)"></div>
             </span>
             <button class="btn btn-primary" type="button" name="button">More Info</button>
           </div>

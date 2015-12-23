@@ -37,31 +37,27 @@ function loadDests(){
 
 module.exports = {
 
-  getDestination: function (req, res, next){
-    for (var x = 0; x < oldDest.length; x++){
-      if (oldDest[x].permalink === req.query.permalink){
-        return res.status(200).send(oldDest[x]);
-      }
-    }
-    res.status(404).send();
+  getDestinations: function (req, res, next) {
+    var url = 'http://api.tripexpert.com/v1/destinations?';
+    var limit = req.query.limit;
+    request.get(url)
+      .query({
+        limit: limit,
+        api_key: '5d8756782b4f32d2004e811695ced8b6'
+      })
+      .end(function (err, response) {
+        if (err) {
+          return util.send500(res, err);
+        }
+        return res.status(200).send(response.body);
+      });
   },
 
   getVenues: function (req, res, next){
-    var permalink = req.query.permalink;
-    console.log(permalink);
-    Dest.findOne({perm: permalink}, function (err, dest) {
-      console.log(dest);
-      if (err){
-        console.log(err);
-        return res.status(500).send();
-      }
-
-      if (!dest){
-        return res.status(400).send();
-      }
-      request.get('http://api.tripexpert.com/v1/venues?')
+    var destinationId = req.query.destinationId;
+    request.get('http://api.tripexpert.com/v1/venues?')
          .query({
-          destination_id: dest.destId,
+          destination_id: destinationId,
           api_key: process.env.TRIPEXPERT_KEY
         })
          .end(function (err, response) {
@@ -72,7 +68,6 @@ module.exports = {
             var text = JSON.parse(response.text);
             return res.status(200).send(text.response.venues);
          });
-    });
   },
 
   getDetailedInfo: function (req, res, next){

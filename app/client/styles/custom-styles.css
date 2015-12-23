@@ -78,7 +78,7 @@ ul.rating {
 
 .thumbnail {
   width: 250px;
-  height: 335px;
+  height: 400px;
   overflow: auto;
   margin-bottom: 15px;
   margin-left: 20px;
@@ -90,4 +90,30 @@ ul.rating {
 
 .detailed-info {
   margin-bottom: 10px;
+}
+
+.typeahead-demo .custom-popup-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  background-color: #f9f9f9;
+}
+
+.typeahead-demo .custom-popup-wrapper > .message {
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  color: #868686;
+}
+
+.typeahead-demo .custom-popup-wrapper > .dropdown-menu {
+  position: static;
+  float: none;
+  display: block;
+  min-width: 160px;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }

@@ -1,9 +1,9 @@
 angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
 
-.controller('ResultsController', function ($scope, $window, $rootScope, $state, $uibModal, CurrentInfo, Venues, City, Groups, Util) {
+.controller('ResultsController', function ($scope, $window, $rootScope, $state, $uibModal, CurrentInfo, Venues, Groups, Util) {
   $scope.venues = [];
   $scope.filteredVenues = [];
-  $scope.city = null;
+  $scope.city = $rootScope.destination;
   $scope.heading = null;
   $scope.groups = [];
 
@@ -57,35 +57,13 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
   };
 
 
-  ////////////////// GET BASIC DESTINATION CITY INFO //////////////////////
-
-
-  $scope.getCity = function (permalink) {
-    permalink = permalink || $rootScope.destinationPermalink;
-    if (!permalink) return;
-    var query = {
-      permalink: permalink
-    };
-
-    City.getCity(query)
-      .then(function(cityInfo) {
-        $scope.city = cityInfo;
-        CurrentInfo.destination.basicInfo = cityInfo;
-    })
-      .catch(function(error){
-        console.error(error);
-      });
-  };
-
-
   ////////////////// GET ALL VENUES BASED ON A DESTINATION CITY //////////////////////
 
 
-  $scope.getVenuesOfDestination = function (permalink) {
-    permalink = permalink || $rootScope.destinationPermalink;
-    if (!permalink) return;
+  $scope.getVenuesOfDestination = function (destinationId) {
+    if (!destinationId) return;
     var query = {
-      permalink: permalink
+      destinationId: destinationId
     };
     Venues.getVenues(query)
       .then(function(venuesInfo) {
@@ -147,6 +125,25 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
     Venues.addRating(data);
   };
 
+  $scope.addToRatingsMain = function(venueId) {
+    var query = {
+      venueId : venueId
+    };
+    Venues.getDetailedVenueInfo(query)
+      .then(function(venueInfo) {
+        var data = {
+          venue: venueInfo,
+          userId : $rootScope.currentUser._id,
+          groupId : $rootScope.currentGroup._id,
+          rating: 5
+        };
+        Venues.addRating(data);   
+      })
+      .catch(function(error){
+        console.error(error);
+      });
+  };
+
   $scope.addToFavs = function(venueData) {
     venueData.userInfo = $rootScope.currentUser;
     venueData.groupInfo = $rootScope.currentGroup;
@@ -160,6 +157,5 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
 
 
   $scope.getUserGroups();
-  $scope.getCity($rootScope.destinationPermalink);
-  $scope.getVenuesOfDestination($rootScope.destinationPermalink);
+  $scope.getVenuesOfDestination($rootScope.destination.id);
 });

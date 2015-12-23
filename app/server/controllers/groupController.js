@@ -15,7 +15,7 @@ module.exports = {
 
   createGroup: function(req, res, next){
     var title  = req.body.groupName;
-    var dest   = req.body.destination;
+    var destId   = req.body.destinationId;
     var userId = req.body.userId;
 
     User.findById(userId)
@@ -32,7 +32,7 @@ module.exports = {
 
         var newGroup = new Group({
           title: title,
-          destination: dest,
+          destination: destId,
           host: user
         });
         newGroup.members.push(user._id);
