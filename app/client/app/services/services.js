@@ -173,8 +173,8 @@ angular.module('travel.services', [])
       url: '/api/dest/',
       params: { limit: 375 }
     }).then(function(res) {
-      console.log(res.data.response.destinations);
-      return res.data.response.destinations;
+      console.log(res.data);
+      return res.data.destinations;
     });
   };
 

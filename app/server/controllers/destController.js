@@ -9,31 +9,6 @@ var util = require('../util');
 var venues = require("../../../mock-data/venues.json");
 var dests = require("../../../mock-data/destinations.json");
 
-var venue = venues.Results;
-var oldDest = dests.Results;
-
-function loadDests(){
-
-  function StupidJSHint(err, dest){
-    if (err) console.log(err);
-  }
-
-    request.get('http://api.tripexpert.com/v1/destinations?api_key=' + process.env.TRIPEXPERT_KEY)
-       .end(function (err, res) {
-          if (err){
-            console.log(err);
-            return;
-          }
-          var text = JSON.parse(res.text);
-          list = text.response.destinations;
-          for (var i = 0; i < list.length; i++){
-            Dest.findOrCreate({id: list[i].id}, {perm: list[i].permalink, destId: list[i].id}, StupidJSHint);
-          }
-       });
-}
-
- loadDests();
-
 
 module.exports = {
 
@@ -94,5 +69,25 @@ module.exports = {
 
           return res.status(200).send(response.body.response.venue[0]);
         });
+  },
+
+  loadDests: function () {
+
+    function StupidJSHint(err, dest){
+      if (err) console.log(err);
+    }
+
+      request.get('http://api.tripexpert.com/v1/destinations?api_key=' + process.env.TRIPEXPERT_KEY)
+         .end(function (err, res) {
+            if (err){
+              console.log(err);
+              return;
+            }
+            var text = JSON.parse(res.text);
+            list = text.response.destinations;
+            for (var i = 0; i < list.length; i++){
+              Dest.findOrCreate({id: list[i].id}, {perm: list[i].permalink, destId: list[i].id}, StupidJSHint);
+            }
+         });
   }
 };

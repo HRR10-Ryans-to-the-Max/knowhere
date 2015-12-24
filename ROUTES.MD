@@ -29,8 +29,9 @@ GET  /api/check  indexController#isLoggedIn
 GET  /api/info   indexController#getInfo
 
 dest
-GET  /api/dest/        destController#getDestinations
-GET  /api/dest/venues  destController#getVenues
+GET  /api/dest/            destController#getDestinations
+GET  /api/dest/venues      destController#getVenues
+GET  /api/dest/venues/info destController#getDetailedInfo
 
 group
 GET     /api/group/       groupController#getUserGroups
@@ -69,10 +70,10 @@ GET  /api/dest/venues  destController#getVenues
   @query {int} destinationId
   @response {array} Venue objects
 
-GET  /api/dest/venues/info  destController#
+GET  /api/dest/venues/info  destController#getDetailedInfo
   Get specific information of a specific venue
-  query: venueId
-  response: object of venue information
+  @query {int} venueId
+  @response {object} venue information
 
 
 ## GROUP

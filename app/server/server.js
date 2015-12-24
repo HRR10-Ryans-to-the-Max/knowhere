@@ -19,6 +19,9 @@ var group  = require(path.join(__dirname, 'routes/group'));
 var fav    = require(path.join(__dirname, 'routes/fav'));
 var rating = require(path.join(__dirname, 'routes/rating'));
 
+// To init state:
+var destController = require(path.join(__dirname, './controllers/destController'));
+
 
 var app = express();
 
@@ -120,6 +123,10 @@ app.get('/auth/facebook',
   function(req, res) {
     res.redirect('/');
   });
+
+
+// INIT STATE
+destController.loadDests();
 
 
 module.exports = app;
