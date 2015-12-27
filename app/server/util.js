@@ -15,10 +15,10 @@ module.exports = {
     sendMail: transporter.sendMail.bind(transporter)
   },
 
-  send200: function (res, msg) {
-    if (msg) {
-      console.log(msg);
-      res.status(200).send(msg);
+  send200: function (res, data) {
+    if (data) {
+      // console.log(data);
+      res.status(200).send(data);
     } else {
       res.sendStatus(200);
     }

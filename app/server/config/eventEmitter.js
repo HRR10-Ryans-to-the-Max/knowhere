@@ -26,11 +26,11 @@ function getUserFavInfo(userId) {
       var index = 0;
       var list = [];
       var noCopies = {};
-      var numGroups = user.groupId.length;
+      var numGroups = user.groupIds.length;
 
       function findRatings(){ //combine user favorites and group into single array
         if (index < numGroups) {
-          Rating.findOne({groupId: user.groupId[index]}, function (err, rating){
+          Rating.findOne({groupId: user.groupIds[index]}, function (err, rating){
             if (err || !rating) return;
 
             if (rating.venueId.name) {

@@ -4,7 +4,7 @@ var bcrypt = require('bcrypt-nodejs');
 
 // db.userSchema.pre('init', function(next, data) {
 //   User.populate(data, {
-//     path: 'favorites groupId'
+//     path: 'favorites groupIds'
 //   }, function(err, user) {
 //     data = user;
 //     next();

@@ -42,6 +42,8 @@ module.exports = function(passport) {
       passReqToCallback: true
   },
   function(req, username, password, cb) {
+    username = username.toLowerCase();
+
       // asynchronous
       // User.findOne wont fire unless data is sent back
     process.nextTick(function() {
@@ -95,6 +97,8 @@ module.exports = function(passport) {
     passReqToCallback : true // allows us to pass back the entire request to the callback
   },
   function(req, username, password, done) { // callback with username and password from our form
+    username = username.toLowerCase();
+
     // find a user whose username is the same as the forms username
     // we are checking to see if the user trying to login already exists
     console.log("is this triggering");

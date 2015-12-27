@@ -6,155 +6,172 @@ var path   = require('path');
 var util   = require(path.join(__dirname, '../util'));
 
 
-sendGroup = function(groupId, res, rating) {
+var newVenueWithInfo = function (venueInfo) {
+  return new Venue({
+    lookUpId: venueInfo.id,
+    name: venueInfo.name,
+    venue_type_id: venueInfo.venue_type_id,
+    tripexpert_score: venueInfo.tripexpert_score,
+    rank_in_destination: venueInfo.rank_in_destination,
+    score: venueInfo.score, // TODO ? remove Obsolete?
+    index_photo: venueInfo.index_photo,
+    address: venueInfo.address,
+    telephone: venueInfo.telephone,
+    website: venueInfo.website,
+    photos: venueInfo.photos
+  });
+};
+
+var sendGroup = function(groupId, res, rating) {
   Group.findById(groupId)
     .populate({
       path: 'favorites',
       populate: { path: 'venue' }
     })
     .exec(function (err, group){
-      console.log(group);
+// console.log('######sendGroup0');
+      if (err) return util.send500(res, err);
 
       if (rating) {
         group.favorites.push(rating);
-        group.save(function (err, group) {
-          if (err) return util.send500(res, err);
-
-          return res.status(200).send(group.favorites);
-        });
-      } else {
-        return res.status(200).send(group.favorites);
       }
+      group.save(function (err, group) {
+// console.log('######sendGroup1');
+        if (err) return util.send500(res, err);
+// console.log('######sendGroup2');
+        return util.send200(res, group.favorites);
+      });
     });
 };
 
+var updateGroupRating = function (paramHash) {
+  var groupId = paramHash.groupId;
+  var newRating = paramHash.newRating;
+  var res = paramHash.res;
+  var userId = paramHash.userId;
+  var venue = paramHash.venue;
+
+  Rating.update({'allRatings.user': userId, 'groupId': groupId, 'venue': venue._id},
+                {$set: {'allRatings.$.userRating': newRating}}, function (err, update){
+    if (err) return util.send500(res, err);
+
+    if (update.n > 0) { // Rating exists for that user, and should've been updated.
+      return sendGroup(groupId, res, null);
+    }
+// console.log('########updateGroupRating');
+
+    //user has not already voted, so add to group's ratings
+    Rating.findOrCreate({venue: venue._id, venueLU: venue.lookUpId, groupId: groupId}, function (err, rating){
+      if (err || !rating) return util.send500(res, err);
+
+      rating.allRatings.push({user: userId, userRating: newRating});
+      rating.save(function (err, rating) {
+        if (err) return util.send500(res, err);
+
+        return sendGroup(groupId, res, rating);
+      });
+    });
+  });
+};
+
+var updateUserRating = function (paramHash) {
+  var newRating = paramHash.newRating;
+  var res = paramHash.res;
+  var userId = paramHash.userId;
+  var venue = paramHash.venue;
+
+  User.update({'_id': userId, 'favorites.venueLU': venue.lookUpId},
+              {$set : { 'favorites.$.rating': newRating}}, function (err, update) {
+    if (err) return util.send500(res, err);
+    if (update.n > 0) return; // user vote found, should've been $set updated
+
+    User.findById(userId, function (err, user){
+      if (!user) return util.send400(res, err);
+      if (err) return util.send500(res, err);
+
+      user.favorites.push({venueLU: venue.lookUpId, venue: venue._id, rating: newRating});
+      user.save(function (err, user){
+        if (err) return util.send500(res, err);
+      });
+    });
+  });
+};
+
+
 module.exports = {
 
-  addRating: function(req, res, next){  //add to user and group favorites
+  addOrUpdateRating: function(req, res, next){  //add to user and group favorites
     var venueInfo = req.body.venue;
     var groupId = req.body.groupId;
     var userId  = req.body.userId;
     var newRating  = req.body.rating;
 
+    Venue.findOne({lookUpId: venueInfo.id}, function (err, venue) {
+      if (err) return util.send500(res, err);
 
-    //first check to see if user has already rated venue
-    User.update({'favorites.venueLU': venueInfo.id}, {$set : { 'favorites.$.rating': newRating}}, function (err, num) {
-      //console.log("wtf is this", num)
-      if (num.nModified === 0) {//user has not already rated so check to see if venue exists ---first find user
-        User.findById(userId, function (err, user){
-          Venue.findOne({lookUpId: venueInfo.id}, function(err, venue){
-            if (venue){ //venue exists so need to just add to user favorites
-              user.favorites.push({venueLU: venueInfo.id, venue: venueInfo._id, rating: newRating});
-              user.save(function (err, user){
-                if (!user) return util.send400(res, err);
-                if (err) return util.send500(res, err); 
-              });
-            } else { //no venue so need to create and then add
-              var newVenue = new Venue({
-                lookUpId: venueInfo.id,
-                name: venueInfo.name,
-                venue_type_id: venueInfo.venue_type_id,
-                tripexpert_score: venueInfo.tripexpert_score,
-                rank_in_destination: venueInfo.rank_in_destination,
-                score: venueInfo.score,
-                index_photo: venueInfo.index_photo,
-                address: venueInfo.address,
-                telephone: venueInfo.telephone,
-                website: venueInfo.website,
-                photos: venueInfo.photos
-              });
-              newVenue.save(function (err, venue){
-                if (!venue) return util.send400(res, err);
-                if (err) return util.send500(res, err); 
-              });
-              //now push to user
-              user.favorites.push({venueLU: venueInfo.id, venue: newVenue, rating: newRating});
-              user.save(function (err, user){
-                if (!user) return util.send400(res, err);
-                if (err) return util.send500(res, err); 
-              });
-            }
-          });
+      if (!venue) {
+        venue = newVenueWithInfo(venueInfo);
+        venue.save(function (err, venue){
+          if (err) return util.send500(res, err);
         });
       }
-    });
-    //user taken care of now add to group
-    //check if there is a rating and also if that user has already rated
-    Rating.update({'allRatings.user': userId}, {$set: {'allRatings.userRating': newRating}}, function (err, num){
-      var anotherRating;
-      console.log(" wtf is this ", num);
-      if (num.nModified === 0){ // user has not already voted so now check to see if rating exists
-        Rating.findOne({venueLU: venueInfo.id, groupId: groupId}, function (err, rating){
-          if (rating) { //rating exists so just push new user and rating
-            rating.allRatings.push({user: userId, userRating: newRating});
-            rating.save(function (err, rating) {
-              console.log("83 ", err, rating);
-              if (!rating) return util.send400(res, err);
-              if (err) return util.send500(res, err); 
-              sendGroup(groupId, res, null);
-            });    
-          } else { //no rating so now check to see if venue exists
-            Venue.findOne({lookUpId: venueInfo.id}, function (err, venue){
-              if (venue){ //venue exists so just need to create new rating
-                anotherRating = new Rating({
-                  venueLU: venue.lookUpId,
-                  venue: venue._id,
-                  groupId: groupId
-                });
-                anotherRating.allRatings.push({user: userId, userRating: newRating});
-                anotherRating.save(function(err, rating) {
-                  sendGroup(groupId, res, rating);
-                });                   
-              } else { //must create venue first and then create rating with that venue
-                var newVenue = new Venue({
-                  lookUpId: venueInfo.id,
-                  name: venueInfo.name,
-                  venue_type_id: venueInfo.venue_type_id,
-                  tripexpert_score: venueInfo.tripexpert_score,
-                  rank_in_destination: venueInfo.rank_in_destination,
-                  score: venueInfo.score,
-                  index_photo: venueInfo.index_photo,
-                  address: venueInfo.address,
-                  telephone: venueInfo.telephone,
-                  website: venueInfo.website,
-                  photos: venueInfo.photos
-                });
-                newVenue.save(function (err, venue){
-                  if (!venue) return util.send400(res, err);
-                  if (err) return util.send500(res, err);
-                });
-                anotherRating = new Rating({
-                  venueLU: newVenue.lookUpId,
-                  venue: newVenue,
-                  groupId: groupId
-                });
-                anotherRating.allRatings.push({user: userId, userRating: newRating});
-                anotherRating.save(function (err, rating){
-                  if (!rating) return util.send400(res, err);
-                  if (err) return util.send500(res, err);
-                  sendGroup(groupId, res, rating);
-                });
-              }
-            });
-          }
-        });
-      }
+
+      var argHash = { res: res, // used in #updateUserRating to send errs
+                      venue: venue,
+                      groupId: groupId, // not used in #updateUserRating
+                      userId: userId,
+                      newRating: newRating };
+
+      updateUserRating(argHash);
+
+      // User.favorites taken care of, now add to Rating.allRatings (group's ratings)
+      // If successful, updateGroupRating() will send the HTTP response
+      updateGroupRating(argHash);
     });
   },
 
-  getRating: function(req, res, next) {
+  getRatings: function(req, res, next) {
     var groupId = req.query.groupId;
 
     Group.findById(groupId)
-    .populate({
-      path: 'favorites',
-      populate: {path: 'venue'}
-    })
-    .exec(function (err, group){
-      if (!group) return util.send400(res, err);
-      if (err) return util.send500(res, err);
-      res.status(200).send(group.favorites);
-    });
-      
-  }
+      .populate({  // TODO ? populate Group.members
+        path: 'favorites',
+        populate: {path: 'venue'}
+      })
+      .exec(function (err, group){
+        if (!group) return util.send400(res, err);
+        if (err) return util.send500(res, err);
+
+        util.send200(res, group.favorites);
+      });
+  },
+
+  // THE BELOW IS COPY&PASTED FROM FAV CONTROLLER
+
+  // removeGroupFav: function(req, res, next){
+  //   var venueId = req.params.venueId;
+  //   var groupId = req.params.groupId;
+
+  //   Group.update({_id: groupId}, {$pull : {favorites: venueId}}, function(err, group){
+  //     if (err){
+  //       console.log(err);
+  //     }
+  //     res.status(200).send(group);
+  //   });
+  //   //TODO also remove all ratings for that fav
+  // },
+
+  // removeUserFav: function (req, res, next) {
+  //   var venueId = req.params.venueId;
+  //   var userId = req.params.userId;
+
+  //   User.update({_id: groupId}, {$pull : {favorites: venueId}}, function(err, user){
+  //     if (err){
+  //       console.log(err);
+  //     }
+
+  //     res.status(200).send(user);
+  //   });
+  //   //TODO also remove all ratings for that fav
+  // }
 };

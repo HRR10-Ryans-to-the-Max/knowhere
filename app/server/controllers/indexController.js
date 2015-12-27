@@ -1,10 +1,12 @@
 var User   = require('../models/user');
+var util = require('../util');
 var Venue  = require('../models/venue');
 var Group  = require('../models/group');
 var Rating = require('../models/rating');
 
+
 module.exports = {
-  // fill in
+
   getIndex: function(req, res, next) {
     res.render('index');
   },
@@ -21,16 +23,9 @@ module.exports = {
     var userId = req.query.userId;
 
     User.findById(userId, function (err, user){
-      if (err){
-        console.log(err);
-        res.status(500).send();
-      }
+      if (err) return util.send500(res, err);
 
-      if (user){
-        res.status(200).send(user);
-      } else {
-        res.status(200).send();
-      }
+      util.send200(res, user);
     });
   }
 };

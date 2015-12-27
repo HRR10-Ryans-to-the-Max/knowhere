@@ -11,12 +11,12 @@ var mongoose     = require('mongoose');
 var morgan       = require('morgan');
 var cors         = require('cors');
 
+var util = require('./util');
 
 // Server routers:
 var index  = require(path.join(__dirname, 'routes/index'));
 var dest   = require(path.join(__dirname, 'routes/dest'));
 var group  = require(path.join(__dirname, 'routes/group'));
-var fav    = require(path.join(__dirname, 'routes/fav'));
 var rating = require(path.join(__dirname, 'routes/rating'));
 
 // To init state:
@@ -54,7 +54,6 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 app.use('/api', index);
 app.use('/api/dest', dest);
 app.use('/api/group', group);
-app.use('/api/fav', fav);
 app.use('/api/rating', rating);
 app.use(cors());
 
@@ -62,18 +61,13 @@ app.use(cors());
 app.post('/login', function (req, res, next) {
   passport.authenticate('local-login',
     function (err, user, info) {
-        if (err || !user){
-          res.status(200).send({message: info.message});
-        } else {
-          req.login(user, function (err){
-            if (err) {
-              console.log(err);
-              res.status(500).send({message: err});
-            } else {
-              res.status(200).send({status: true, user: user});
-            }
-          });
-        }
+        if (err || !user) return util.send200(res, { message: info.message });
+
+        req.login(user, function (err){
+          if (err) return util.send500(res, { message: err });
+
+          util.send200(res, { status: true, user: user });
+        });
     }) (req, res, next);
 });
 
@@ -81,18 +75,13 @@ app.post('/login', function (req, res, next) {
 app.post('/signup', function (req, res, next) {
   passport.authenticate('local-signup',
     function (err, user, info) {
-      if (err || !user){
-        res.status(200).send({message: info.message});
-      } else {
-        req.login(user, function (err){
-          if (err) {
-            console.log(err);
-            res.status(500).send({message: err});
-          } else {
-            res.status(200).send({status: true, user: user});
-          }
-        });
-      }
+      if (err || !user) return util.send200(res, { message: info.message });
+
+      req.login(user, function (err){
+        if (err) return util.send400(res, { message: err });
+
+        res.status(200).send({status: true, user: user});
+      });
     }) (req, res, next);
 });
 

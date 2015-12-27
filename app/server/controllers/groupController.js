@@ -19,14 +19,14 @@ module.exports = {
     var userId = req.body.userId;
 
     User.findById(userId)
-      .populate('groupId')
+      .populate('groupIds')
       .exec(function (err, user) {
         if (!user) return res.status(400).send();
         if (err) return res.status(500).send();
 
-        for (var i = 0; i < user.groupId.length; i++){
-          if (user.groupId[i].title === title){
-            return res.status(200).send(user.groupId[i]);
+        for (var i = 0; i < user.groupIds.length; i++){
+          if (user.groupIds[i].title === title){
+            return res.status(200).send(user.groupIds[i]);
           }
         }
 
@@ -40,7 +40,7 @@ module.exports = {
           if (!group) return util.send400(res, err);
           if (err) return util.send500(res, err);
 
-          user.groupId.push(group._id);
+          user.groupIds.push(group._id);
           user.save(function (err, user){
             if (!user) return util.send400(res, err);
             if (err) return util.send500(res, err);
@@ -103,7 +103,7 @@ module.exports = {
           return res.status(409).send(group);
         }
 
-        user.groupId.push(group);
+        user.groupIds.push(group);
         user.save(function (err, user) {
           if (err) return util.send400(res, err);
 
@@ -125,7 +125,7 @@ module.exports = {
     Group.update({ _id: groupId }, { $pull: { members: userId } }, function (err, groupOut){
       if (err) return util.send500(res, err);
 
-      User.update({ _id: userId }, { $pull: { groupId: groupId } }, function (err, userOut) {
+      User.update({ _id: userId }, { $pull: { groupIds: groupId } }, function (err, userOut) {
         if (err) return util.send500(res, err);
 
         res.status(200).send(groupOut);
@@ -144,7 +144,7 @@ module.exports = {
       }
 
       if (user){
-        res.status(200).send(user.groupId);
+        res.status(200).send(user.groupIds);
       } else {
         res.status(200).send();
       }
@@ -190,7 +190,7 @@ module.exports = {
       }
 
       if (user){
-        res.status(200).send(user.groupId);
+        res.status(200).send(user.groupIds);
       } else {
         res.status(200).send();
       }

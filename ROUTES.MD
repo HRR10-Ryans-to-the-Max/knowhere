@@ -43,15 +43,13 @@ POST    /api/group/add    groupController#addMember
 DELETE  /api/group/user   groupController#removeMember
 
 rating
-POST  /api/rating/         ratingController#addRating
-POST  /api/rating/mod      ratingController#modifyRating
-POST  /api/rating/user     ratingController#addUserRating
-POST  /api/rating/usermod  ratingController#modifyUserRating
+GET   /api/rating/         ratingController#getRatings
+POST  /api/rating/         ratingController#addOrUpdateRating
 ```
 
 ## Front-end routes:
 
-#The following API calls are seen on the [coggle](https://coggle.it/diagram/VnER1WcWk3oeczUt)
+### Some of the following API calls are seen on the [coggle](https://coggle.it/diagram/VnER1WcWk3oeczUt)
 
 ## DEST
 GET  /api/dest/        destController#getDestinations
@@ -120,5 +118,5 @@ GET  /api/rating
 
 POST  /api/rating
   Creates a rating. Adds to user and group ratings
-  ALSO modifies rating
-  data: userId, groupId, rating
+  ALSO modifies ratings
+  data: userId, groupId, rating, venueInfo
