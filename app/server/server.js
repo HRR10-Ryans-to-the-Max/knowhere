@@ -14,6 +14,7 @@ var cors         = require('cors');
 var util = require('./util');
 
 // Server routers:
+var auth   = require(path.join(__dirname, 'routes/auth'));
 var index  = require(path.join(__dirname, 'routes/index'));
 var dest   = require(path.join(__dirname, 'routes/dest'));
 var group  = require(path.join(__dirname, 'routes/group'));
@@ -53,66 +54,11 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // Server routing:
 
 app.use('/api', index);
+app.use('/api/auth', auth);
 app.use('/api/dest', dest);
 app.use('/api/group', group);
 app.use('/api/rating', rating);
 app.use(cors());
-
-//Authentication Routing
-app.post('/login', function (req, res, next) {
-  passport.authenticate('local-login',
-    function (err, user, info) {
-        if (err || !user) return util.send200(res, { message: info.message });
-
-        req.login(user, function (err){
-          if (err) return util.send500(res, { message: err });
-
-          util.send200(res, { status: true, user: user });
-        });
-    }) (req, res, next);
-});
-
-
-app.post('/signup', function (req, res, next) {
-  passport.authenticate('local-signup',
-    function (err, user, info) {
-      if (err || !user) return util.send200(res, { message: info.message });
-
-      req.login(user, function (err){
-        if (err) return util.send400(res, { message: err });
-
-        res.status(200).send({status: true, user: user});
-      });
-    }) (req, res, next);
-});
-
-app.get('/logout', function(req, res){
-  req.logout();
-  res.status(200).send({msg: 'bye'});
-});
-
-app.get('/auth/google', passport.authenticate('google', { scope: [  'https://www.googleapis.com/auth/plus.login',
-       'https://www.googleapis.com/auth/plus.profile.emails.read']}));
-
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
-
-app.get('/auth/facebook',
-  passport.authenticate('facebook', {scope: ['email']}),
-  function(req, res){
-    // The request will be redirected to Facebook for authentication, so this
-    // function will not be called.
-  });
-
- app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/' }),
-  function(req, res) {
-    res.redirect('/');
-  });
 
 
 // INIT STATE

@@ -30,9 +30,9 @@ describe('Auth', function () {
 
   describe('local strategy', function () {
     
-    it('/signup returns a new user object', function (done) {
+    it('/api/auth/signup returns a new user object', function (done) {
       request
-        .post('/signup')
+        .post('/api/auth/signup')
         .send({
           username: 'username',
           password: 'password'
@@ -47,9 +47,9 @@ describe('Auth', function () {
         });
     });
 
-    it('/signup does not allow a duplicate email/username', function (done) {
+    it('/api/auth/signup does not allow a duplicate email/username', function (done) {
       request
-        .post('/signup')
+        .post('/api/auth/signup')
         .send({
           username: 'sameUsername',
           password: 'password'
@@ -57,7 +57,7 @@ describe('Auth', function () {
         .end(function (err, res) {
 
           request
-            .post('/signup')
+            .post('/api/auth/signup')
             .send({
               username: 'SaMeUsErname',
               password: 'password'
@@ -69,11 +69,11 @@ describe('Auth', function () {
         });
     });
 
-    describe('/login', function () {
+    describe('/api/auth/login', function () {
       
       beforeEach(function (done) {
         request
-          .post('/signup')
+          .post('/api/auth/signup')
           .send({
             username: 'username',
             password: 'password'
@@ -86,7 +86,7 @@ describe('Auth', function () {
 
       it('rejects bad password', function (done) {
         request
-          .post('/login')
+          .post('/api/auth/login')
           .send({
             username: 'username',
             password: 'badPassword'
@@ -99,7 +99,7 @@ describe('Auth', function () {
 
       it('rejects bad username', function (done) {
         request
-          .post('/login')
+          .post('/api/auth/login')
           .send({
             username: 'whoAmI',
             password: 'badPassword'
@@ -112,7 +112,7 @@ describe('Auth', function () {
 
       it('logs user in', function (done) {
         request
-          .post('/login')
+          .post('/api/auth/login')
           .send({
             username: 'username',
             password: 'password'

@@ -403,7 +403,7 @@ describe('server controllers', function () {
 
     it('isLoggedIn() responds with false if !req.isAuthenticated', function (done) {
       request
-        .get('/api/check') // indexController#isLoggedIn
+        .get('/api/auth/check') // indexController#isLoggedIn
         .end(function (err, res) {
           expect(res.body.status).to.equal(false);
           done();

@@ -161,7 +161,7 @@ module.exports = function(passport) {
   passport.use(new GoogleStrategy({
     clientID: '1039303204244-ibed3rqe95qds98tkk4gfpja4r4ed6bh.apps.googleusercontent.com',
     clientSecret: 'hhdRHgPIL5ezFgwqiKalMNBc',
-    callbackURL: PROTOCOL_DOMAIN + '/auth/google/callback'
+    callbackURL: PROTOCOL_DOMAIN + '/api/auth/google/callback'
     },
     function(accessToken, refreshToken, profile, cb) {
       process.nextTick(function() {
@@ -202,7 +202,7 @@ module.exports = function(passport) {
   passport.use(new FacebookStrategy({
     clientID: '323161997808257',
     clientSecret: '3c8a18558adf92b62d696abd5be4fa15',
-    callbackURL: PROTOCOL_DOMAIN + '/auth/facebook/callback',
+    callbackURL: PROTOCOL_DOMAIN + '/api/auth/facebook/callback',
     enableProof: false,
     profileFields: ['id', 'displayName', 'email']
   },

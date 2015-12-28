@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var path = require('path');
 var User   = require('../models/user');
 var Venue  = require('../models/venue');
@@ -24,10 +25,12 @@ module.exports = {
         if (!user) return res.status(400).send();
         if (err) return res.status(500).send();
 
-        for (var i = 0; i < user.groupIds.length; i++){
-          if (user.groupIds[i].title === title){
-            return res.status(200).send(user.groupIds[i]);
-          }
+        var oldGroup = _.find(user.groupIds, function (groupId) {
+          return groupId.title === title;
+        });
+
+        if (oldGroup) {
+          return util.send200(res, oldGroup);
         }
 
         var newGroup = new Group({
@@ -142,16 +145,10 @@ module.exports = {
     var userId = req.query.userId;
 
     User.findById(userId, function (err, user){
-      if (err){
-        console.log(err);
-        res.status(500).send();
-      }
+      if (err) return util.send500(res, err);
 
-      if (user){
-        res.status(200).send(user.groupIds);
-      } else {
-        res.status(200).send();
-      }
+      var data = ( user ? user.groupIds : null );
+      util.send200(res, data);
     });
   },
 
@@ -188,16 +185,10 @@ module.exports = {
     var userId = req.query.userId;
 
     User.findById(userId, function (err, user){
-      if (err){
-        console.log(err);
-        res.status(500).send();
-      }
+      if (err) return util.send500(res, err);
 
-      if (user){
-        res.status(200).send(user.groupIds);
-      } else {
-        res.status(200).send();
-      }
+      var data = ( user ? user.groupIds : null );
+      util.send200(res, data);
     });
   },
 

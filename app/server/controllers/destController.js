@@ -77,17 +77,16 @@ module.exports = {
       if (err) console.log(err);
     }
 
-      request.get('http://api.tripexpert.com/v1/destinations?api_key=' + process.env.TRIPEXPERT_KEY)
-         .end(function (err, res) {
-            if (err){
-              console.log(err);
-              return;
-            }
-            var text = JSON.parse(res.text);
-            list = text.response.destinations;
-            for (var i = 0; i < list.length; i++){
-              Dest.findOrCreate({id: list[i].id}, {perm: list[i].permalink, destId: list[i].id}, StupidJSHint);
-            }
-         });
+    request.get('http://api.tripexpert.com/v1/destinations?api_key=' + process.env.TRIPEXPERT_KEY)
+       .end(function (err, res) {
+          if (err) return console.error(err);
+
+          list = res.body.response.destinations;
+          for (var i = 0; i < list.length; i++){
+            Dest.findOrCreate({id: list[i].id},
+                {perm: list[i].permalink, destId: list[i].id},
+                StupidJSHint);
+          }
+       });
   }
 };
