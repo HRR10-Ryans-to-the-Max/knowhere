@@ -361,17 +361,6 @@ describe('Knowhere client controllers', function () {
 
         expect($rootScope.destination).toEqual(group2.destination);
       });
-
-      it('$scope._setHeading() sets $scope.heading', function () {
-        $scope._setHeading(1);
-        expect($scope.heading).toEqual('Hotels');
-
-        $scope._setHeading(2);
-        expect($scope.heading).toEqual('Restaurants');
-
-        $scope._setHeading(3);
-        expect($scope.heading).toEqual('Attractions');
-      });
     });
   });
 
@@ -453,15 +442,6 @@ describe('Knowhere client controllers', function () {
         $scope.selectGroup(group2);
 
         expect($rootScope.destination).toEqual(group2.destination);
-      });
-
-      it('addToFavs() sets $rootScope.currentUser, $rootScope.currentGroup, \
-                                        and rating of 5 on venue',function () {
-        $scope.addToFavs(centralPark);
-
-        expect(centralPark.userInfo).toEqual(testUser);
-        expect(centralPark.groupInfo).toEqual(group1);
-        expect(centralPark.rating).toEqual(5);
       });
     });
   });

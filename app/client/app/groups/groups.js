@@ -12,12 +12,7 @@ angular.module('travel.groups', [])
 
 
   $scope.getUserGroups = function() {
-    if (!$rootScope.currentUser || !$rootScope.currentUser._id) return;
-
-    Groups.getUserGroups($rootScope.currentUser._id)
-        .then(function(groupsInfo){
-          $scope.groups = groupsInfo;
-        });
+    Groups.getUserGroups($scope);
   };
 
 

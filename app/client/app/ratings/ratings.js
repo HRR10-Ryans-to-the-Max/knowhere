@@ -7,16 +7,25 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   $scope.heading = null;
   $scope.allVenuesRatings = [];
   $scope.groups = [];
+  $scope.ratingsInfo = $rootScope.ratingsInfo;
+  $scope.phoneHide = $rootScope.phoneHide;
+
+  // For add rating
+  $scope.ratings = {};
+  $scope.max = 10;
+  $scope.isReadonly = false;
+  $scope.showRatings = {};
+
+  // For image carousel
+  $scope.myInterval = 5000;
+  $scope.noWrapSlides = false;
 
 
   ////////////////// GET ALL THE GROUPS OF A USER //////////////////////
 
 
   $scope.getUserGroups = function() {
-    Groups.getUserGroups($rootScope.currentUser._id)
-      .then(function(groupsInfo){
-        $scope.groups = groupsInfo;
-      });
+    Groups.getUserGroups($scope);
   };
 
 
@@ -31,18 +40,16 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// FILTER FOR RESTAURANTS/ATTRACTIONS/HOTELS //////////////////////
 
 
-  $scope.filterRatings = function (filterType) {
+  //FIXME: need updated data response object
+  $scope.filterRatings = function (venueTypeId) {
     if (!$scope.allVenuesRatings.length) return;
 
     // set heading to appropriate value
-    $scope._setHeading(filterType);
+    Util.setHeading($scope, venueTypeId);
 
-    $scope.filteredGroupRatings = [];
-    $scope.filteredUserRatings = [];
+    var filteredVenues = Util.filterVenues($scope, venueTypeId);
 
-    $scope.allVenuesRatings.forEach(function (ven) {
-      if (ven.venue.venue_type_id !== filterType) return;
-
+    filteredVenues.forEach(function (ven) {
       ven.allRatings.forEach(function (rating) {
         if (rating.user === $rootScope.currentUser._id) {
           ven.currentUserRating = rating;
@@ -61,16 +68,16 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// ADD AVERAGES FOR A VENUE //////////////////////
 
 
-  $scope.addAvg = function (venue) {
+  $scope.addAvg = function (ratingObj) {
     var total = 0;
     var numberofRatings = 0;
-    venue.allRatings.forEach(function(rating){
+    ratingObj.allRatings.forEach(function(rating){
       if (rating.userRating !== 0) {
         total += rating.userRating;
         numberofRatings ++;
       }
     });
-    venue.avgRating = (total / numberofRatings) || 0;
+    ratingObj.avgRating = (total / numberofRatings) || 0;
   };
 
 
@@ -78,11 +85,9 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
 
 
   $scope.getRatings = function() {
-    var userId = $rootScope.currentUser._id;
-    var groupId = $rootScope.currentGroup._id;
     var query = {
-      userId : userId,
-      groupId : groupId
+      userId : $rootScope.currentUser._id,
+      groupId : $rootScope.currentGroup._id
     };
     Venues.getRatings(query)
       .then(function(venuesInfo){
@@ -92,56 +97,28 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
       });
   };
 
-  // $scope.fetchUserFavorites = function () {
-  //   var userId = $rootScope.currentUser._id;
-  //   Venues.getUserFavorites(userId)
-  //   .then(function(favorites) {
-  //     $scope.allVenuesRatings = favorites;
-  //     console.log('favorites', $scope.allVenuesRatings);
-  //     $scope.filterRatings(1);
-  //   });
-  // };
-
 
   ////////////////// USER ADD RATING //////////////////////
 
 
-  $scope.ratings = {};
-  $scope.max = 10;
-  $scope.isReadonly = false;
-  $scope.showRatings = {};
   $scope.hoveringOver = function(value,id) {
     $scope.showRatings[id] = value;
   };
 
-  $scope.addRating = function(venueData, rating) {
-    var userId = $rootScope.currentUser._id;
-    venueData.allRatings.forEach(function(rate) {
-      if (rate.user === userId) {
-        rate.userRating = rating;
+  $scope.addRating = function(ratingObj, newRating) {
+    ratingObj.allRatings.forEach(function(rate) {
+      if (rate.user === $rootScope.currentUser._id) {
+        rate.userRating = newRating;
       }
     });
-    venueData.currentRating = rating;
-    console.log(venueData);
-    $scope.addAvg(venueData);
-    var data = {
-      venue : venueData.venue,
-      userId : userId,
-      groupId : $rootScope.currentGroup._id,
-      rating : rating
-    };
-    Venues.addRating(data);
+    $scope.addAvg(ratingObj);
+
+    Venues.addRating(ratingObj.venue, newRating);
   };
 
 
   ////////////////// GET DETAILED INFO OF A VENUE //////////////////////
 
-
-  // Sets image carousel interval
-  $scope.myInterval = 5000;
-  $scope.noWrapSlides = false;
-  $scope.ratingsInfo = $rootScope.ratingsInfo;
-  $scope.phoneHide = $rootScope.phoneHide;
 
   $scope.getDetailedVenueInfo = function(venue) {
     if (venue.venue.telephone === null) {
@@ -177,20 +154,6 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
       endDate : null
     };
     Venues.addtoItinerary(data);
-  };
-
-
-////////////////// SET HEADING //////////////////////
-
-
-  $scope._setHeading = function (filterType) {
-    if (filterType === 1) {
-      $scope.heading = 'Hotels';
-    } else if (filterType === 2) {
-      $scope.heading = 'Restaurants';
-    } else if (filterType === 3) {
-      $scope.heading = 'Attractions';
-    }
   };
 
 
