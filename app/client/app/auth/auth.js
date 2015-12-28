@@ -18,7 +18,7 @@ angular.module('signin', ['ui.bootstrap'])
 
     AuthMe.logout()
         .then(function (data) {
-          console.log(data);
+          // console.log(data);
         });
   };
 

@@ -34,46 +34,27 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   $scope.filterRatings = function (filterType) {
     if (!$scope.allVenuesRatings.length) return;
 
-    var venues = [];
-    var groupRatings = [];
-    var userRatings = [];
-    var userId = $rootScope.currentUser._id;
-
     // set heading to appropriate value
-    if (filterType === 1) {
-      $scope.heading = 'Hotels';
-    } else if (filterType === 2) {
-      $scope.heading = 'Restaurants';
-    } else if (filterType === 3) {
-      $scope.heading = 'Attractions';
-    }
+    $scope._setHeading(filterType);
 
-    // populate venues with appropriate results
-    // not working with groups removed this code...
-    // if (favorite.userInfo === $rootScope.currentUser) {
-    //   console.log(favorite.venue);
-    // } else {
-    //   GroupRatings.push(favorite);
-    // }
+    $scope.filteredGroupRatings = [];
+    $scope.filteredUserRatings = [];
 
-    $scope.allVenuesRatings.forEach(function(ven) {
-      if (ven.venue.venue_type_id === filterType) {
-        venues.push(ven);
-      }
-    });
-    venues.forEach(function(ven) {
-      $scope.addAvg(ven);
-      ven.allRatings.forEach(function(rating) {
-        if (rating.user === userId) {
-          ven.currentRating = rating.userRating;
-          userRatings.push(ven);
+    $scope.allVenuesRatings.forEach(function (ven) {
+      if (ven.venue.venue_type_id !== filterType) return;
+
+      ven.allRatings.forEach(function (rating) {
+        if (rating.user === $rootScope.currentUser._id) {
+          ven.currentUserRating = rating;
+          $scope.filteredUserRatings.push(ven);
+        } else {
+          $scope.filteredGroupRatings.push(ven);
         }
       });
     });
-    $scope.filteredGroupRatings = groupRatings;
-    $scope.filteredUserRatings  = userRatings;
-    $rootScope.mockData = userRatings;
-    console.log(userRatings);
+    // TODO remove this hack
+    $rootScope.mockData = $scope.filteredUserRatings;
+    // console.log($scope.filteredUserRatings);
   };
 
 
@@ -196,6 +177,20 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
       endDate : null
     };
     Venues.addtoItinerary(data);
+  };
+
+
+////////////////// SET HEADING //////////////////////
+
+
+  $scope._setHeading = function (filterType) {
+    if (filterType === 1) {
+      $scope.heading = 'Hotels';
+    } else if (filterType === 2) {
+      $scope.heading = 'Restaurants';
+    } else if (filterType === 3) {
+      $scope.heading = 'Attractions';
+    }
   };
 
 
