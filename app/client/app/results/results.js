@@ -120,7 +120,7 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
       groupId : $rootScope.currentGroup._id,
       rating: 0
     };
-    console.log(data);
+    // console.log(data);
     Venues.addRating(data);
   };
 

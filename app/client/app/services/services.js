@@ -133,6 +133,22 @@ angular.module('travel.services', [])
     });
   };
 
+  /*
+    @data {object} has:
+      @prop {str} groupId.
+      @prop {str} userId.
+  */
+  var removeMember = function (data) {
+    return $http({
+      method: 'DELETE',
+      url: '/api/group/user',
+      data: data
+    })
+    .then(function (resp) {
+      return resp.data;
+    });
+  };
+
   // NOT HTTP REQ FUNCTIONS
   var selectGroup = function (next) {
     return function (groupInfo) {
@@ -312,7 +328,7 @@ angular.module('travel.services', [])
       params: {userId: userId}
     })
     .then(function(resp) {
-      console.log(resp.data);
+      // console.log(resp.data);
       return resp.data;
     });
   };
