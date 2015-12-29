@@ -151,8 +151,8 @@ var ratingSchema = new Schema ({
   }],
 
   itinerary: {
-    startDate: Date,
-    endDate: Date
+    fromDate: Date,
+    toDate:   Date
   }
 });
 

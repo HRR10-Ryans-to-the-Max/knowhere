@@ -319,31 +319,11 @@ angular.module('travel.services', [])
       @prop {str} fromDate
       @prop {str} toDate
   */
-  var addtoItinerary = function(data) {
+  var addToItinerary = function(data) {
     return $http({
       method: 'POST',
       url: '/api/rating/itin',
       data: data
-    });
-  };
-
-
-  ////////////////// ITINERARY //////////////////////
-
-
-  /*
-    @params {object} query has:
-      @prop {str} groupId
-      @prop {str} userId
-  */
-  var getItinerary = function(query){
-    return $http({
-      method: 'GET',
-      url: '/api/rating/itin',
-      params: query
-    })
-    .then(function(resp){
-      return resp.data;
     });
   };
 
@@ -373,8 +353,7 @@ angular.module('travel.services', [])
     getUserFavorites: getUserFavorites,
     addRating: addRating,
     getRatings: getRatings,
-    getItinerary: getItinerary,
-    addtoItinerary: addtoItinerary,
+    addToItinerary: addToItinerary,
     getDetailedVenueInfo: getDetailedVenueInfo
   };
 

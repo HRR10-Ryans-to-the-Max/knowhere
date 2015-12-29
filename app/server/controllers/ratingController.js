@@ -149,32 +149,15 @@ module.exports = {
       });
   },
 
-  getItin: function(req, res, next){
-    console.log(req.params);
-    console.log(req.query);
-    var groupId   = req.query.groupId;
-    Group.findById(groupId)
-    .populate({
-      path: 'favorites',
-      populate: { path: 'venue' }
-    })
-    .exec(function (err, group){
-      if (err) return util.send500(res, err);
-      if (err) return util.send500(res, err);
-      return util.send200(res, group.favorites);
-    });
-
-  },
-
   addItin: function(req, res, next){
     var venueInfo = req.body.venue;
     var groupId   = req.body.groupId;
-    var start     = req.body.fromDate;
-    var end       = req.body.toDate;
+    var fromDate  = req.body.fromDate;
+    var toDate    = req.body.toDate;
 
 
     Rating.update({'groupId': groupId, 'venue': venueInfo.venue},
-                  {$set: {'itinerary.startDate': start, 'itinerary.endDate': end}}, function (err, update){
+                  {$set: {'itinerary.fromDate': fromDate, 'itinerary.toDate': toDate}}, function (err, update){
 
       if (err) return util.send500(res, err);
       if (update.nModified < 0) return util.send400(res, err);

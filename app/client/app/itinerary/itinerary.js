@@ -6,11 +6,15 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
   $scope.hotels = [];
   $scope.city = $rootScope.destination;
   $scope.heading = null;
-  //TODO: REMOVE AND UNCOMMENT BELOW WHEN HAVE FULL DATA
-  //$scope.fullItinerary = $rootScope.mockData;
   $scope.fullItinerary = [];
-  //TORO: REMOVE AND UNCOMMENT ABOVE WHEN HAVE FULL DATA 
   $scope.groups = [];
+
+  // For detailed venue info view
+  // Sets image carousel interval
+  $scope.myInterval = 5000;
+  $scope.noWrapSlides = false;
+  $scope.itinInfo = $rootScope.itinInfo;
+  $scope.phoneHide = $rootScope.phoneHide;
 
 
   ////////////////// GET ALL THE GROUPS OF A USER //////////////////////
@@ -54,19 +58,16 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
   };
 
 
-  ////////////////// GET GROUP ITINERARY //////////////////////
+  ////////////////// GET GROUP ITINERARY / RATINGS //////////////////////
 
-
-  $scope.getItinerary = function() {
-    var userId = $rootScope.currentUser._id;
-    var groupId = $rootScope.currentGroup._id;
+  $scope.getRatings = function () {
     var query = {
-      userId : userId,
-      groupId : groupId
+      userId: $rootScope.currentUser._id,
+      groupId: $rootScope.currentGroup._id
     };
-    Venues.getItinerary(query)
-      .then(function(itineraryData){
-        $scope.fullItinerary = itineraryData;
+    Venues.getRatings(query)
+      .then(function (ratings) {
+        $scope.fullItinerary = ratings;
         $scope.filterItinerary(1);
       });
   };
@@ -75,7 +76,7 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// ADD TO ITINERARY - ADMIN ONLY//////////////////////
 
 
-  $scope.addDatestoItinerary = function(venueData, fromDate, toDate) {
+  $scope.addDatesToItinerary = function(venueData, fromDate, toDate) {
     console.log(venueData, fromDate, toDate);
     var userId = $rootScope.currentUser._id;
     var groupId = $rootScope.currentGroup._id;
@@ -86,17 +87,12 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
       fromDate : fromDate,
       toDate : toDate
     };
-    Venues.addtoItinerary(data);
+    Venues.addToItinerary(data);
   };
 
 
   ////////////////// GET DETAILED INFO OF A VENUE //////////////////////
 
-
-  $scope.myInterval = 5000;
-  $scope.noWrapSlides = false;
-  $scope.itinInfo = $rootScope.itinInfo;
-  $scope.phoneHide = $rootScope.phoneHide;
 
   $scope.getDetailedVenueInfo = function(venue) {
     if (venue.venue.telephone === null) {
@@ -123,7 +119,7 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
 //////////////////INIT STATE//////////////////////
 
 
-  $scope.getItinerary();
+  $scope.getRatings();
 
 
   //////////////////TEST//////////////////////

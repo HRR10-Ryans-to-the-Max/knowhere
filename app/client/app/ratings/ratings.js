@@ -143,7 +143,7 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// ADMIN ONLY //////////////////////
 
 
-  $scope.addtoItin = function(venueData) {
+  $scope.addToItin = function(venueData) {
     var data = {
       venue : venueData,
       userId : $rootScope.currentUser._id,
@@ -151,7 +151,7 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
       fromDate : new Date(),
       toDate : new Date()
     };
-    Venues.addtoItinerary(data);
+    Venues.addToItinerary(data);
   };
 
 
