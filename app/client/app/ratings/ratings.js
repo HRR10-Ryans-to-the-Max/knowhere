@@ -47,9 +47,10 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
     // set heading to appropriate value
     Util.setHeading($scope, venueTypeId);
 
-    var filteredVenues = Util.filterVenues($scope.venues, venueTypeId);
+    var filteredRatings = Util.filterRatingsByVenueType($scope.allVenuesRatings,
+                                                       venueTypeId);
 
-    filteredVenues.forEach(function (ven) {
+    filteredRatings.forEach(function (ven) {
       ven.allRatings.forEach(function (rating) {
         if (rating.user === $rootScope.currentUser._id) {
           ven.currentUserRating = rating;
