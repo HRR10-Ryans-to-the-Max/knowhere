@@ -7,18 +7,19 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   $scope.heading = null;
   $scope.allVenuesRatings = [];
   $scope.groups = [];
-  $scope.ratingsInfo = $rootScope.ratingsInfo;
-  $scope.phoneHide = $rootScope.phoneHide;
 
-  // For add rating
+  // For user add rating
   $scope.ratings = {};
   $scope.max = 10;
   $scope.isReadonly = false;
   $scope.showRatings = {};
 
-  // For image carousel
+  // For detailed venue info view
+  // Sets image carousel interval
   $scope.myInterval = 5000;
   $scope.noWrapSlides = false;
+  $scope.ratingsInfo = $rootScope.ratingsInfo;
+  $scope.phoneHide = $rootScope.phoneHide;
 
 
   ////////////////// GET ALL THE GROUPS OF A USER //////////////////////
@@ -40,29 +41,29 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// FILTER FOR RESTAURANTS/ATTRACTIONS/HOTELS //////////////////////
 
 
-  //FIXME: need updated data response object
   $scope.filterRatings = function (venueTypeId) {
     if (!$scope.allVenuesRatings.length) return;
 
-    // set heading to appropriate value
     Util.setHeading($scope, venueTypeId);
 
     var filteredRatings = Util.filterRatingsByVenueType($scope.allVenuesRatings,
-                                                       venueTypeId);
+                                                        venueTypeId);
 
-    filteredRatings.forEach(function (ven) {
-      ven.allRatings.forEach(function (rating) {
+    filteredRatings.forEach(function (ratingObj) {
+      $scope.addAvg(ratingObj);
+
+      ratingObj.allRatings.forEach(function (rating) {
         if (rating.user === $rootScope.currentUser._id) {
-          ven.currentUserRating = rating;
-          $scope.filteredUserRatings.push(ven);
+          ratingObj.currentRating = rating.userRating;
+          $scope.filteredUserRatings.push(ratingObj);
         } else {
-          $scope.filteredGroupRatings.push(ven);
+          $scope.filteredGroupRatings.push(ratingObj);
         }
       });
     });
-    // TODO remove this hack
+
     $rootScope.mockData = $scope.filteredUserRatings;
-    // console.log($scope.filteredUserRatings);
+    // console.log(userRatings);
   };
 
 
@@ -91,9 +92,8 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
       groupId : $rootScope.currentGroup._id
     };
     Venues.getRatings(query)
-      .then(function(venuesInfo){
-        console.log(venuesInfo);
-        $scope.allVenuesRatings = venuesInfo;
+      .then(function(ratings){
+        $scope.allVenuesRatings = ratings;
         $scope.filterRatings(1);
       });
   };
@@ -102,19 +102,27 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// USER ADD RATING //////////////////////
 
 
-  $scope.hoveringOver = function(value,id) {
+  $scope.hoveringOver = function(value, id) {
     $scope.showRatings[id] = value;
   };
 
-  $scope.addRating = function(ratingObj, newRating) {
-    ratingObj.allRatings.forEach(function(rate) {
-      if (rate.user === $rootScope.currentUser._id) {
-        rate.userRating = newRating;
+  $scope.addRating = function(venueData, rating) {
+    var userId = $rootScope.currentUser._id;
+    venueData.allRatings.forEach(function(rate) {
+      if (rate.user === userId) {
+        rate.userRating = rating;
       }
     });
-    $scope.addAvg(ratingObj);
-
-    Venues.addRating(ratingObj.venue, newRating);
+    venueData.currentRating = rating;
+    console.log(venueData);
+    $scope.addAvg(venueData);
+    var data = {
+      venue : venueData.venue,
+      userId : userId,
+      groupId : $rootScope.currentGroup._id,
+      rating : rating
+    };
+    Venues.addRating(data);
   };
 
 
