@@ -92,6 +92,12 @@ POST  /api/group
   Add participant (tentative)
   data: group object, user object, participant email
 
+DELETE /api/group/user
+  Remove participant
+  @data
+    @prop {str} groupId
+    @prop {str} userId
+
 
 ## ITIN
 GET  /api/itin

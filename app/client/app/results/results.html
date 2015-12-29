@@ -8,7 +8,7 @@
             <!-- empty anchor tags may need to be fixed -->
             <li role="navigation" class="active"><a href="#/results">Explore</a></li>
             <li role="navigation" class="active"><a href="#/ratings">Ratings</a></li>
-            <li role="navigation" class="active"><a href="#">Itinerary</a></li>
+            <li role="navigation" class="active"><a href="#/itinerary">Itinerary</a></li>
           </ul>
         </div>
       </div><!-- /.jumbotron -->
@@ -34,9 +34,9 @@
               <h4>{{ venue.name }}</h4>
             </div>
             <div class="caption">
-              <button class="btn btn-primary" type="button" name="button" ng-click="addToRatingsMain(venue.id)">Add to Ratings</button>
+              <button class="btn btn-sm btn-primary" type="button" name="button" ng-click="addToRatingsMain(venue.id)">Add to Ratings</button>
+              <button class="btn btn-sm btn-info" type="button" name="button" ng-click="getDetailedVenueInfo(venue.id)">More Info</button>
             </div>
-            <button class="btn btn-primary" type="button" name="button" ng-click="getDetailedVenueInfo(venue.id)">More Info</button>
           </div>
         </div>
       </div>

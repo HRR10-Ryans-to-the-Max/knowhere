@@ -2,13 +2,13 @@
   <div class="container-fluid text-center">
     <div class="row">
       <div class="jumbotron" ng-style="{'background-image':'url(' + city.splash_photo + ')'}">
-        <h1>Favorites in {{ city.name }}</h1>
+        <h1>Itinerary in {{ city.name }}</h1>
         <div class="col-md-offset-3 col-md-6">
           <ul class="nav nav-pills center-pills">
             <!-- empty anchor tags may need to be fixed -->
             <li role="navigation" class="active"><a href="#/results">Explore</a></li>
             <li role="navigation" class="active"><a href="#/ratings">Ratings</a></li>
-            <li role="navigation" class="active"><a href="#">Itinerary</a></li>
+            <li role="navigation" class="active"><a href="#/itinerary">Itinerary</a></li>
           </ul>
         </div>
       </div><!-- /.jumbotron -->
@@ -20,23 +20,36 @@
       <li role="presentation"><a href="" ng-click="filterItinerary(1)">Hotels</a></li>
       <li role="presentation"><a href="" ng-click="filterItinerary(2)">Restaurants</a></li>
       <li role="presentation"><a href="" ng-click="filterItinerary(3)">Attractions</a></li>
+      <li role="presentation"><a href="" ng-click="showFullItinerary()">Full Itinerary</a></li>
     </ul>
     <div class="row">
       <h2 class="text-center">{{ heading }}</h2>
     </div>
 
     <h1 class="text-center" ng-if="filteredItinerary.length < 1">
-      You current do not have any favorites!
+      You current do not have any itinerary in {{ heading }}!
     </h1>
-    <div class="row" class="text-center">
-      <div ng-repeat="venue in filteredItinerary" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail" >
+    <div class="row" class="text-center ">
+      <div ng-repeat="venue in filteredItinerary track by $index" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail itinerary">
         <div class="venue-info">
-          <img class="venue-thumbnail" ng-src="{{ venue.index_photo }}" alt="photo: {{ venue.name }}">
-          <div class="caption">
+          <img class="venue-thumbnail" ng-src="{{ venue.venue.index_photo }}" alt="photo: {{ venue.venue.name }}">
             <div class="title">
-              <h4>{{ venue.name }}</h4>
+              <h4>{{ venue.venue.name }}</h4>
             </div>
-            <button class="btn btn-primary" type="button" name="button">More Info</button>
+            <div class="caption">
+              <div class="detailed-info"> Average Group Rating: {{ venue.avgRating}}
+              </div>
+              <div>
+                <div>Start date: <br> <em>{{fromDate | date:'fullDate' }}</em></div>
+                <input class="detailed-info" type="date" class="form-control" ng-model="fromDate" ng-required="true"/>
+                <div>End date: <br> <em>{{toDate | date:'fullDate' }}</em></div>
+                <input class="detailed-info" type="date" class="form-control" ng-model="toDate" ng-required="true"/>
+              </div>
+              <div>
+                <button class="btn btn-sm btn-success" type="button" name="button" ng-click="addDatestoItinerary(venue, fromDate, toDate)">Submit</button>
+                <button class="btn btn-sm btn-info" type="button" name="button" ng-click="getDetailedVenueInfo(venue)">More Info</button>
+              </div> 
+            </div>
           </div>
         </div>
       </div>

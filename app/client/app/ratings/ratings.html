@@ -2,13 +2,13 @@
   <div class="container-fluid text-center">
     <div class="row">
       <div class="jumbotron" ng-style="{'background-image':'url(' + city.splash_photo + ')'}">
-        <h1>Favorites in {{ city.name }}</h1>
+        <h1>Ratings in {{ city.name }}</h1>
         <div class="col-md-offset-3 col-md-6">
           <ul class="nav nav-pills center-pills">
             <!-- empty anchor tags may need to be fixed -->
             <li role="navigation" class="active"><a href="#/results">Explore</a></li>
             <li role="navigation" class="active"><a href="#/ratings">Ratings</a></li>
-            <li role="navigation" class="active"><a href="#">Itinerary</a></li>
+            <li role="navigation" class="active"><a href="#/itinerary">Itinerary</a></li>
           </ul>
         </div>
       </div><!-- /.jumbotron -->
@@ -17,47 +17,37 @@
 
   <div class="container">
     <ul class="nav nav-tabs">
-      <li role="presentation"><a href="" ng-click="filterFavorites(1)">Hotels</a></li>
-      <li role="presentation"><a href="" ng-click="filterFavorites(2)">Restaurants</a></li>
-      <li role="presentation"><a href="" ng-click="filterFavorites(3)">Attractions</a></li>
+      <li role="presentation"><a href="" ng-click="filterRatings(1)">Hotels</a></li>
+      <li role="presentation"><a href="" ng-click="filterRatings(2)">Restaurants</a></li>
+      <li role="presentation"><a href="" ng-click="filterRatings(3)">Attractions</a></li>
     </ul>
     <div class="row">
       <h2 class="text-center">{{ heading }}</h2>
     </div>
 
-    <h1 class="text-center" ng-if="filteredGroupRatings.length < 1 && filteredUserRatings.length < 1">
+    <h1 class="text-center" ng-if="filteredUserRatings.length < 1">
       You current do not have anything to rate!
     </h1>
     <div class="row" class="text-center ">
       <h3 class="text-center"> User Ratings </h3>
-      <div ng-repeat="venue in filteredUserRatings track by $index" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail" >
+      <div ng-repeat="venue in filteredUserRatings track by $index" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail ratings" >
         <div class="venue-info">
           <img class="venue-thumbnail" ng-src="{{ venue.venue.index_photo }}" alt="photo: {{ venue.venue.name }}">
-          <div class="caption">
             <div class="title">
               <h4>{{ venue.venue.name }}</h4>
             </div>
-            <span>Select your rating <br> {{venue.currentUserRating.userRating}} out of 10
-              <div star-rating rating-value="venue.currentUserRating.userRating" max="10" on-rating-selected="addRating(venue.venue, venue.currentUserRating.userRating)"></div>
-            </span>
-            <button class="btn btn-primary" type="button" name="button">More Info</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row" class="text-center">
-      <h3 class="text-center"> Group Ratings </h3>
-      <div ng-repeat="venue in filteredGroupRatings" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail" >
-        <div class="venue-info">
-          <img class="venue-thumbnail" ng-src="{{ venue.venue.index_photo }}" alt="photo: {{ venue.venue.name }}">
-          <div class="caption">
-            <div class="title">
-              <h4>{{ venue.venue.name }}</h4>
+            <div class="caption">
+              <div>Select your rating</div>
+              <uib-rating ng-init="ratings[venue._id] = venue.currentRating; showRatings[venue._id] = venue.currentRating" on-hover="hoveringOver(value, venue._id)" ng-model="ratings[venue._id]" ng-click="addRating(venue, ratings[venue._id])" max="max" readonly="isReadonly" aria-labelledby="default-rating"></uib-rating>
+              <div class="detailed-info">
+                <span class="label" ng-class="{'label-danger': showRatings[venue._id]<3,'label-warning': showRatings[venue._id]<5, 'label-info': showRatings[venue._id]>=5 && showRatings[venue._id]<8, 'label-success': showRatings[venue._id]>=8}" ng-show="!isReadonly">{{showRatings[venue._id]}}/10</span>
+                <button type="button" class="btn label label-danger" ng-click="ratings[venue._id] = 0; showRatings[venue._id] = 0; addRating(venue, 0)">Clear Rating</button>
+              </div>
+              <div>
+                <button class="btn btn-sm btn-info" type="button" name="button" ng-click="getDetailedVenueInfo(venue)">More Info</button>
+                <button class="btn btn-sm btn-primary" type="button" name="button" ng-click="addtoItin(venue)">Add to Itinerary</button>
+              </div> 
             </div>
-            <span>Select your rating <br> {{venue.venue.userRating}} out of 10
-              <div star-rating rating-value="venue.venue.userRating" max="10" on-rating-selected="addRating(venue.venue, venue.venue.userRating)"></div>
-            </span>
-            <button class="btn btn-primary" type="button" name="button">More Info</button>
           </div>
         </div>
       </div>

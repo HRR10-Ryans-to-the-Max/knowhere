@@ -78,14 +78,21 @@ ul.rating {
 
 .thumbnail {
   width: 250px;
-  height: 400px;
+  height: 340px;
   overflow: auto;
   margin-bottom: 15px;
   margin-left: 20px;
 }
 
+.ratings {
+  height: 380px;
+}
+
+.itinerary {
+  height: 520px;
+}
 .title {
-  height: 50px
+  height: 30px
 }
 
 .detailed-info {
@@ -116,4 +123,15 @@ ul.rating {
   border: none;
   border-radius: 0;
   box-shadow: none;
+}
+
+.full button span {
+  background-color: limegreen;
+  border-radius: 32px;
+  color: black;
+}
+.partially button span {
+  background-color: orange;
+  border-radius: 32px;
+  color: black;
 }

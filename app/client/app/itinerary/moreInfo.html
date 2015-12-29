@@ -1,0 +1,28 @@
+<div>
+	<div class="text-center">
+		<h2>{{itinInfo.venue.name}}</h2> 
+		<div>
+			<p>{{itinInfo.venue.address}}</p> 
+			<p ng-show="!phoneHide">{{itinInfo.venue.telephone}}</p>
+			<a href="{{itinInfo.venue.website}}">{{itinInfo.venue.website}}</a> <br>
+			<p>Group Average Rating: {{itinInfo.avgRating}}</p> 
+		</div>
+		<div class="detailed-info ">
+      <div>Start date: <br> <em>{{fromDate | date:'fullDate' }}</em></div>
+      <input class="detailed-info" type="date" class="form-control" ng-model="fromDate" ng-required="true"/>
+      <div>End date: <br> <em>{{toDate | date:'fullDate' }}</em></div>
+      <input class="detailed-info" type="date" class="form-control" ng-model="toDate" ng-required="true"/>
+      <div>
+        <button class="btn btn-sm btn-success" type="button" name="button" ng-click="addDatestoItinerary(itinInfo, fromDate, toDate)">Submit</button>
+      </div>
+    </div> 
+	</div>
+  <uib-carousel interval="myInterval" no-wrap="noWrapSlides">
+    <uib-slide ng-repeat="photo in itinInfo.venue.photos" active="slide.active">
+      <img ng-src="{{photo}}" style="margin:auto;">
+      <div class="carousel-caption">
+      </div>
+    </uib-slide>
+  </uib-carousel>
+</div>
+<div>
