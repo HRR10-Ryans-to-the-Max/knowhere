@@ -17,15 +17,8 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
 
 
   $scope.getUserGroups = function() {
-    var query = {
-      userInfo: $rootScope.currentUser
-    };
-    Groups.getUserGroups(query)
-      .then(function(groupsInfo){
-        $scope.groups = groupsInfo;
-      });
+    Groups.getUserGroups($scope);
   };
-  // $scope.getUserGroups();
 
 
   ////////////////// SELECTING A GROUP WILL REROUTE TO ITINERARY //////////////////////
@@ -39,28 +32,15 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// FILTER FOR RESTAURANTS/ATTRACTIONS/HOTELS //////////////////////
 
 
-  $scope.filterItinerary = function (filterType) {
-    var venues = [];
+  $scope.filterItinerary = function (venueTypeId) {
+    Util.setHeading($scope, venueTypeId);
 
-    // set heading to appropriate value
-    if (filterType === 1) {
-      $scope.heading = 'Hotels';
-    } else if (filterType === 2) {
-      $scope.heading = 'Restaurants';
-    } else if (filterType === 3) {
-      $scope.heading = 'Attractions';
-    }
-
-    $scope.fullItinerary.forEach(function(ven) {
-      if (ven.venue.venue_type_id === filterType) {
-        venues.push(ven);
-      }
+    // TODO ? Refactor controller to use this:
+    // $scope.filteredVenues = Util.filterVenues($scope.venues, venueTypeId);
+    $scope.filteredItinerary = $scope.fullItinerary.filter(function (ven) {
+      return ven.venue.venue_type_id === venueTypeId;
     });
-    $scope.filteredItinerary = venues;
   };
-  //TODO: REMOVE BELOW WHEN HAVE FULL DATA
-  $scope.filterItinerary(1);
-  //TORO: REMOVE ABOVE WHEN HAVE FULL DATA 
 
 
   ////////////////// SHOW FULL ITINERARY //////////////////////
@@ -86,11 +66,9 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
     Venues.getItinerary(query)
       .then(function(itineraryData){
         $scope.itinerary = fullItineraryData;
-        filterItinerary();
+        $scope.filterItinerary(1);
       });
   };
-
-  // $scope.getItinerary();
 
 
   ////////////////// ADD TO ITINERARY - ADMIN ONLY//////////////////////
@@ -139,6 +117,14 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
       controller: 'ItineraryController',
     });
   };
+
+
+//////////////////INIT STATE//////////////////////
+
+
+  //TODO: REMOVE BELOW WHEN HAVE FULL DATA
+  $scope.filterItinerary(1);
+  //TODO: REMOVE ABOVE WHEN HAVE FULL DATA 
 
 
   //////////////////TEST//////////////////////
