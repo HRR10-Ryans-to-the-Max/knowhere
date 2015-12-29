@@ -181,6 +181,12 @@ angular.module('travel.services', [])
 
 
 .factory('Util', function () {
+  var filterRatingsByVenueType = function (ratings, venueTypeId) {
+    return ratings.filter(function (rating) {
+      return rating.venue.venue_type_id === venueTypeId;
+    });
+  };
+
   var filterVenues = function (venues, venueTypeId) {
     return venues.filter(function (venue) {
       return venue.venue_type_id === venueTypeId;
@@ -205,6 +211,7 @@ angular.module('travel.services', [])
   };
 
   return {
+    filterRatingsByVenueType: filterRatingsByVenueType,
     filterVenues: filterVenues,
     setHeading: setHeading,
     transToPermalink: transToPermalink
