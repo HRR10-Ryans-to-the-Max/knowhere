@@ -33,9 +33,12 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
 
 
   $scope.filterItinerary = function (venueTypeId) {
-    Util.setHeader($scope, venueTypeId);
+    Util.setHeading($scope, venueTypeId);
 
-    $scope.filteredItinerary = Util.filterVenues($scope, venueTypeId);
+    // $scope.filteredVenues = Util.filterVenues($scope, venueTypeId);
+    $scope.filteredItinerary = $scope.fullItinerary.filter(function (ven) {
+      return ven.venue.venue_type_id === venueTypeId;
+    });
   };
 
 
@@ -62,7 +65,7 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
     Venues.getItinerary(query)
       .then(function(itineraryData){
         $scope.itinerary = fullItineraryData;
-        filterItinerary();
+        $scope.filterItinerary(1);
       });
   };
 
