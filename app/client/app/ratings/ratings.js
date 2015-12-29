@@ -106,23 +106,15 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
     $scope.showRatings[id] = value;
   };
 
-  $scope.addRating = function(venueData, rating) {
-    var userId = $rootScope.currentUser._id;
-    venueData.allRatings.forEach(function(rate) {
-      if (rate.user === userId) {
-        rate.userRating = rating;
+  $scope.addRating = function(ratingObj, newRating) {
+    ratingObj.allRatings.forEach(function (userRating) {
+      if (userRating.user === $rootScope.currentUser._id) {
+        userRating.userRating = newRating;
       }
     });
-    venueData.currentRating = rating;
-    console.log(venueData);
-    $scope.addAvg(venueData);
-    var data = {
-      venue : venueData.venue,
-      userId : userId,
-      groupId : $rootScope.currentGroup._id,
-      rating : rating
-    };
-    Venues.addRating(data);
+    $scope.addAvg(ratingObj);
+
+    Venues.addRating(ratingObj.venue, newRating);
   };
 
 
