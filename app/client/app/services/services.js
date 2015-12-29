@@ -210,7 +210,7 @@ angular.module('travel.services', [])
 ////////////////// VENUES //////////////////////
 
 
-.factory('Venues', function ($http) {
+.factory('Venues', function ($http, $rootScope) {
 
 
   ////////////////// PLACES TO EXPLORE //////////////////////
