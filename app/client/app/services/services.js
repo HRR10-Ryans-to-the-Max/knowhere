@@ -181,6 +181,7 @@ angular.module('travel.services', [])
 
 
 .factory('Util', function () {
+  // TODO ? combine these two filter functions
   var filterRatingsByVenueType = function (ratings, venueTypeId) {
     return ratings.filter(function (rating) {
       return rating.venue.venue_type_id === venueTypeId;

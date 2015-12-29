@@ -36,7 +36,8 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
     Util.setHeading($scope, venueTypeId);
 
     // TODO ? Refactor controller to use this:
-    // $scope.filteredVenues = Util.filterVenues($scope.venues, venueTypeId);
+    // $scope.filteredVenues = Util.filterRatingsByVenueType($scope.venues,
+    //                                                       venueTypeId);
     $scope.filteredItinerary = $scope.fullItinerary.filter(function (ven) {
       return ven.venue.venue_type_id === venueTypeId;
     });
