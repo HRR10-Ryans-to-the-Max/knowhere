@@ -1,12 +1,13 @@
+var async        = require('async');
 var events       = require('events');
 var eventEmitter = new events.EventEmitter();
-var User         = require('../models/user');
-var Venue        = require('../models/venue');
-var Rating       = require('../models/rating');
-var request      = require('superagent');
-var async        = require('async');
 var path         = require('path');
+var request      = require('superagent');
+
+var Rating       = require('../models/rating');
+var User         = require('../models/user');
 var util         = require(path.join(__dirname, '../util'));
+var Venue        = require('../models/venue');
 
 // =========================================================================
 // Loading User Favs=============================================================

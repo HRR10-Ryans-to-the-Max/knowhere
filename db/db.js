@@ -108,10 +108,6 @@ var groupSchema = new Schema ({
   favorites: [{
     type: Schema.ObjectId,
     ref: 'Rating'
-  }],
-  itinerary: [{
-    type: Schema.ObjectId,
-    ref: 'Itinerary'
   }]
 });
 

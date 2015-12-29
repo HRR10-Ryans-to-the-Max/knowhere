@@ -12,6 +12,7 @@ var server = require(path.join(__dirname, '../../app/server/server'));
 var testUtil = require(path.join(__dirname, '../testUtil'));
 // Models
 var Group = require(path.join(__dirname, '../../app/server/models/group'));
+var Rating = require(path.join(__dirname, '../../app/server/models/rating'));
 var User = require(path.join(__dirname, '../../app/server/models/user'));
 var Venue = require(path.join(__dirname, '../../app/server/models/venue'));
 
@@ -115,6 +116,7 @@ describe('server controllers', function () {
     testUtil.dropDb(con, done);
   });
 
+  // Leave pending so no calls are made to TripExpert's API
   xdescribe('destController', function () {
 
     describe('getDestinations()', function () {
@@ -309,20 +311,31 @@ describe('server controllers', function () {
     describe('removeMember()', function () {
 
       beforeEach(function (done) {
+        // create rating
         request
-          .del('/api/group/user')
+          .post('/api/rating')
           .send({
+            venue: greenwichHotelInfo,
             groupId: group._id,
-            userId: testUser._id
+            userId: testUser._id,
+            rating: 5
           })
-          .expect(200)
           .end(function (err, res) {
-
-            // Update group
-            Group.findById(group._id, function (err, _group_) {
-              group = _group_;
-              done();
-            });
+            // remove member
+            request
+              .del('/api/group/user')
+              .send({
+                groupId: group._id,
+                userId: testUser._id
+              })
+              .expect(200)
+              .end(function (err, res) {
+                // Update var group
+                Group.findById(group._id, function (err, _group_) {
+                  group = _group_;
+                  done();
+                });
+              });
           });
       });
 
@@ -338,6 +351,13 @@ describe('server controllers', function () {
           });
 
           expect(userHasGroup).to.equal(false);
+          done();
+        });
+      });
+
+      it('removes user\'s ratings from group\'s ratings', function (done) {
+        Rating.findOne({ 'groupId': group._id }, function (err, rating) {
+          expect(rating.allRatings.length).to.equal(0);
           done();
         });
       });
@@ -383,7 +403,7 @@ describe('server controllers', function () {
 
     it('isLoggedIn() responds with false if !req.isAuthenticated', function (done) {
       request
-        .get('/api/check') // indexController#isLoggedIn
+        .get('/api/auth/check') // indexController#isLoggedIn
         .end(function (err, res) {
           expect(res.body.status).to.equal(false);
           done();

@@ -6,20 +6,17 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
   $scope.city = $rootScope.destination;
   $scope.heading = null;
   $scope.groups = [];
+  // Sets image carousel interval
+  $scope.myInterval = 5000;
+  $scope.noWrapSlides = false;
+  $scope.detailedInfo = $rootScope.detailedInfo;
 
 
   ////////////////// GET ALL THE GROUPS OF A USER //////////////////////
 
 
   $scope.getUserGroups = function() {
-    if (!$rootScope.currentUser || !$rootScope.currentUser._id) {
-      return console.error("Cannot get groups. currentUser id not found!");
-    }
-
-    Groups.getUserGroups($rootScope.currentUser._id)
-      .then(function(groupsInfo){
-        $scope.groups = groupsInfo;
-      });
+    Groups.getUserGroups($scope);
   };
 
 
@@ -34,25 +31,12 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// FILTER FOR RESTAURANTS/ATTRACTIONS/HOTELS //////////////////////
 
 
-  $scope.filterVenues = function (filterType) {
-    var venues = [];
-
+  $scope.filterVenues = function (venueTypeId) {
     // set heading to appropriate value
-    if (filterType === 1) {
-      $scope.heading = 'Hotels';
-    } else if (filterType === 2) {
-      $scope.heading = 'Restaurants';
-    } else if (filterType === 3) {
-      $scope.heading = 'Attractions';
-    }
+    Util.setHeading($scope, venueTypeId);
 
     // populate venues with appropriate results
-    $scope.venues.forEach(function(venue) {
-      if (venue.venue_type_id === filterType) {
-        venues.push(venue);
-      }
-    });
-    $scope.filteredVenues = venues;
+    $scope.filteredVenues = Util.filterVenues($scope.venues, venueTypeId);
   };
 
 
@@ -61,6 +45,7 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
 
   $scope.getVenuesOfDestination = function (destinationId) {
     if (!destinationId) return;
+
     var query = {
       destinationId: destinationId
     };
@@ -79,11 +64,6 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
 
   ////////////////// GET DETAILED INFO OF A VENUE //////////////////////
 
-
-  // Sets image carousel interval
-  $scope.myInterval = 5000;
-  $scope.noWrapSlides = false;
-  $scope.detailedInfo = $rootScope.detailedInfo;
 
   $scope.getDetailedVenueInfo = function(venueId) {
     var query = {
@@ -113,15 +93,8 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// ADD TO RESULT LIST //////////////////////
 
 
-  $scope.addToRatings = function(venueData) {
-    var data = {
-      venue: venueData,
-      userId : $rootScope.currentUser._id,
-      groupId : $rootScope.currentGroup._id,
-      rating: 0
-    };
-    console.log(data);
-    Venues.addRating(data);
+  $scope.addToRatings = function(venueInfo) {
+    Venues.addRating(venueInfo, null);
   };
 
   $scope.addToRatingsMain = function(venueId) {
@@ -130,25 +103,11 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
     };
     Venues.getDetailedVenueInfo(query)
       .then(function(venueInfo) {
-        var data = {
-          venue: venueInfo,
-          userId : $rootScope.currentUser._id,
-          groupId : $rootScope.currentGroup._id,
-          rating: 0
-        };
-        Venues.addRating(data);   
+        Venues.addRating(venueInfo, null);   
       })
       .catch(function(error){
         console.error(error);
       });
-  };
-
-  $scope.addToFavs = function(venueData) {
-    venueData.userInfo = $rootScope.currentUser;
-    venueData.groupInfo = $rootScope.currentGroup;
-    venueData.rating = 5;
-    Venues.addToUserFavorites({ userId: $rootScope.currentUser._id,
-                                venue: venueData });
   };
 
 

@@ -13,18 +13,11 @@ module.exports = {
     res.render('index');
   },
 
-  isLoggedIn: function(req, res, next){
-   if (req.isAuthenticated()) {
-    res.status(200).send({status: true, user: req.user});
-   } else{
-    res.status(200).send({status: false});
-   }
-  },
-
   getInfo: function (req, res, next){
     var userId = req.query.userId;
 
     User.findById(userId, function (err, user){
+      if (!user) return util.send400(res, err);
       if (err) return util.send500(res, err);
 
       util.send200(res, user);
