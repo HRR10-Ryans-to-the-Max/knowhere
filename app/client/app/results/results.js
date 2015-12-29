@@ -36,7 +36,7 @@ angular.module('travel.results', ['ui.bootstrap', 'ngAnimate'])
     Util.setHeading($scope, venueTypeId);
 
     // populate venues with appropriate results
-    $scope.filteredVenues = Util.filterVenues($scope, venueTypeId);
+    $scope.filteredVenues = Util.filterVenues($scope.venues, venueTypeId);
   };
 
 

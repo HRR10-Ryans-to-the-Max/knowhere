@@ -169,8 +169,8 @@ angular.module('travel.services', [])
 
 
 .factory('Util', function () {
-  var filterVenues = function ($scope, venueTypeId) {
-    return $scope.venues.filter(function (venue) {
+  var filterVenues = function (venues, venueTypeId) {
+    return venues.filter(function (venue) {
       return venue.venue_type_id === venueTypeId;
     });
   };
