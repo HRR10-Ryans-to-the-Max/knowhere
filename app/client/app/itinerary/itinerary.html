@@ -13,7 +13,7 @@
     </div>
 
     <h1 class="text-center" ng-if="filteredItinerary.length < 1">
-      You current do not have any itinerary in {{ heading }}!
+      You currently do not have any itinerary in {{ heading }}!
     </h1>
     <div class="row" class="text-center ">
       <div ng-repeat="venue in filteredItinerary track by $index" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 thumbnail" ng-class="{'itinerary': showInput, 'full-itinerary': !showInput}">
