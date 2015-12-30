@@ -26,7 +26,12 @@
               <div>Select your rating</div>
               <uib-rating ng-init="ratings[venue._id] = venue.currentRating; showRatings[venue._id] = venue.currentRating" on-hover="hoveringOver(value, venue._id)" ng-model="ratings[venue._id]" ng-click="addRating(venue, ratings[venue._id])" max="max" readonly="isReadonly" aria-labelledby="default-rating"></uib-rating>
               <div class="detailed-info">
-                <span class="label" ng-class="{'label-danger': showRatings[venue._id]<3,'label-warning': showRatings[venue._id]<5, 'label-info': showRatings[venue._id]>=5 && showRatings[venue._id]<8, 'label-success': showRatings[venue._id]>=8}" ng-show="!isReadonly">{{showRatings[venue._id]}}/10</span>
+                <span class="label" ng-class="{
+                  'label-danger': showRatings[venue._id] < 3,
+                  'label-warning': showRatings[venue._id] < 5,
+                  'label-info': showRatings[venue._id] >= 5 && showRatings[venue._id] < 8,
+                  'label-success': showRatings[venue._id] >= 8 }"
+                  ng-show="!isReadonly">{{showRatings[venue._id]}}/10</span>
                 <button type="button" class="btn label label-danger" ng-click="ratings[venue._id] = 0; showRatings[venue._id] = 0; addRating(venue, 0)">Clear Rating</button>
               </div>
               <div>

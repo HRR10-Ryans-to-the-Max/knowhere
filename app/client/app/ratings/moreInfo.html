@@ -1,24 +1,24 @@
 <div>
-	<div class="text-center">
-		<h2>{{ratingsInfo.venue.name}}</h2> 
-		<div>
-			<p>{{ratingsInfo.venue.address}}</p> 
-			<p ng-show="!phoneHide">{{ratingsInfo.venue.telephone}}</p>
-			<a href="{{ratingsInfo.venue.website}}">{{ratingsInfo.venue.website}}</a> <br>
-			<p>Group Average Rating: {{ratingsInfo.avgRating}}</p> 
-		</div>
-		<div class="detailed-info">
-			<div class="detailed-info">
-				<uib-rating ng-init="ratings[ratingsInfo._id] = ratingsInfo.currentRating; showRatings[ratingsInfo._id] = ratingsInfo.currentRating " on-hover="hoveringOver(value, ratingsInfo._id)" on-leave="overStar = null" ng-click="addRating(ratingsInfo, ratings[ratingsInfo._id])" ng-model="ratings[ratingsInfo._id]" max="max" readonly="isReadonly" aria-labelledby="default-rating"></uib-rating>
-				<span class="label" ng-class="{'label-danger': showRatings[ratingsInfo._id]<3,'label-warning': showRatings[ratingsInfo._id]<5, 'label-info': showRatings[ratingsInfo._id]>=5 && showRatings[ratingsInfo._id]<8, 'label-success': showRatings[ratingsInfo._id]>=8}" ng-show="!isReadonly">{{showRatings[ratingsInfo._id]}}/10</span>
-			</div>
-			<div class="caption">
-      	<button type="button" class="btn btn-sm btn-danger" ng-click="ratings[ratingsInfo._id] = 0; showRatings[ratingsInfo._id] = 0; addRating(ratingsInfo, 0)" ng-disabled="isReadonly">Clear Rating</button>
-      	<button class="btn btn-sm btn-primary" type="button" name="button" ng-click="addToItin(ratingsInfo)">Add to Itinerary
-				</button> 
+  <div class="text-center">
+    <h2>{{ratingsInfo.venue.name}}</h2> 
+    <div>
+      <p>{{ratingsInfo.venue.address}}</p> 
+      <p ng-show="!phoneHide">{{ratingsInfo.venue.telephone}}</p>
+      <p><a href="{{ratingsInfo.venue.website}}">{{ratingsInfo.venue.website}}</a></p>
+      <p ng-show="{{ratingsInfo.avgRating}}">Group Average Rating: {{ratingsInfo.avgRating}}</p> 
+    </div>
+    <div class="detailed-info">
+      <div class="detailed-info">
+        <uib-rating ng-init="ratings[ratingsInfo._id] = ratingsInfo.currentRating; showRatings[ratingsInfo._id] = ratingsInfo.currentRating " on-hover="hoveringOver(value, ratingsInfo._id)" on-leave="overStar = null" ng-click="addRating(ratingsInfo, ratings[ratingsInfo._id])" ng-model="ratings[ratingsInfo._id]" max="max" readonly="isReadonly" aria-labelledby="default-rating"></uib-rating>
+        <span class="label" ng-class="{'label-danger': showRatings[ratingsInfo._id]<3,'label-warning': showRatings[ratingsInfo._id]<5, 'label-info': showRatings[ratingsInfo._id]>=5 && showRatings[ratingsInfo._id]<8, 'label-success': showRatings[ratingsInfo._id]>=8}" ng-show="!isReadonly">{{showRatings[ratingsInfo._id]}}/10</span>
       </div>
-		</div>
-	</div>
+      <div class="caption">
+        <button type="button" class="btn btn-sm btn-danger" ng-click="ratings[ratingsInfo._id] = 0; showRatings[ratingsInfo._id] = 0; addRating(ratingsInfo, 0)" ng-disabled="isReadonly">Clear Rating</button>
+        <button class="btn btn-sm btn-primary" type="button" name="button" ng-click="addToItin(ratingsInfo)">Add to Itinerary
+        </button> 
+      </div>
+    </div>
+  </div>
   <uib-carousel interval="myInterval" no-wrap="noWrapSlides">
     <uib-slide ng-repeat="photo in ratingsInfo.venue.photos" active="slide.active">
       <img ng-src="{{photo}}" style="margin:auto;">

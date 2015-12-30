@@ -1,17 +1,17 @@
 <div>
-	<div class="text-center">
-		<h2>{{ratingsInfo.venue.name}}</h2> 
-		<div>
-			<p>{{ratingsInfo.venue.address}}</p> 
-			<p ng-show="!phoneHide">{{ratingsInfo.venue.telephone}}</p>
-			<a href="{{ratingsInfo.venue.website}}">{{ratingsInfo.venue.website}}</a> <br>
-			<p>Group Average Rating: {{ratingsInfo.avgRating}}</p> 
-		</div>
-		<div class="detailed-info ">
+  <div class="text-center">
+    <h2>{{ratingsInfo.venue.name}}</h2> 
+    <div>
+      <p>{{ratingsInfo.venue.address}}</p> 
+      <p ng-show="!phoneHide">{{ratingsInfo.venue.telephone}}</p>
+      <a href="{{ratingsInfo.venue.website}}">{{ratingsInfo.venue.website}}</a> <br>
+      <p>Group Average Rating: {{ratingsInfo.avgRating}}</p> 
+    </div>
+    <div class="detailed-info ">
       <div>Start date: <br> <em>{{ratingsInfo.itinerary.fromDate | date:'longDate' }}</em></div>
       <div>End date: <br> <em>{{ratingsInfo.itinerary.toDate | date:'longDate' }}</em></div>
     </div> 
-	</div>
+  </div>
   <uib-carousel interval="myInterval" no-wrap="noWrapSlides">
     <uib-slide ng-repeat="photo in ratingsInfo.venue.photos" active="slide.active">
       <img ng-src="{{photo}}" style="margin:auto;">
