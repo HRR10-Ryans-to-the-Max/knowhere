@@ -90,23 +90,6 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   };
 
 
-  ////////////////// GET ALL RATINGS OF THE GROUP //////////////////////
-
-
-  // itin
-  $scope.getRatings = function() {
-    var query = {
-      userId : $rootScope.currentUser._id,
-      groupId : $rootScope.currentGroup._id
-    };
-    Venues.getRatings(query)
-      .then(function(ratings){
-        $scope.allVenuesRatings = ratings;
-        $scope.filterRatings(1);
-      });
-  };
-
-
   ////////////////// USER ADD RATING //////////////////////
 
 
@@ -129,23 +112,13 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// ADMIN ONLY //////////////////////
 
 
-  // itin
   $scope.addToItin = Venues.addToItinerary;
-  // $scope.addToItin = function(venueData, fromDate, toDate) {
-  //   var data = {
-  //     venue : venueData,
-  //     userId : $rootScope.currentUser._id,
-  //     groupId : $rootScope.currentGroup._id,
-  //     fromDate : new Date(),
-  //     toDate : new Date()
-  //   };
-  //   Venues.addToItinerary(data);
-  // };
 
 
   ////////////////// INIT STATE //////////////////////
 
 
-  $scope.getRatings();
+  Venues.setRatings($scope);
+
 
 });

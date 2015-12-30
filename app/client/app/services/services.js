@@ -238,15 +238,11 @@ angular.module('travel.services', [])
     });
   };
 
-  /*
-    @params {object} query has:
-      @prop {int} destinationId
-  */
-  var getVenues = function(query){
+  var getVenues = function(destinationId){
     return $http({
       method: 'GET',
       url: '/api/dest/venues',
-      params: query
+      params: { destinationId: destinationId }
     })
     .then(function successCb (resp){
       return resp.data;
@@ -256,15 +252,11 @@ angular.module('travel.services', [])
     });
   };
 
-  /*
-    @params {object} query has:
-      @prop {str} venueId
-  */
-  var getDetailedVenueInfo = function(query){
+  var getDetailedVenueInfo = function(venueId){
     return $http({
       method: 'GET',
       url: '/api/dest/venues/info',
-      params: query
+      params: { venueId: venueId }
     })
     .then(function successCb (resp){
       return resp.data;
@@ -278,19 +270,22 @@ angular.module('travel.services', [])
   ////////////////// RATINGS //////////////////////
 
 
-  /*
-    @params {object} query has:
-      @prop {str} groupId
-      @prop {str} userId
-  */
-  var getRatings = function(query){
+  var setRatings = function(_$scope_){
+    var query = {
+      groupId: $rootScope.currentGroup._id,
+      userId: $rootScope.currentUser._id,
+    };
     return $http({
       method: 'GET',
       url: '/api/rating',
       params: query
     })
     .then(function(resp){
-      return resp.data;
+      _$scope_.allVenuesRatings = resp.data;
+      _$scope_.filterRatings(1);
+    })
+    .catch(function (error) {
+      console.error(error);
     });
   };
 
@@ -312,6 +307,7 @@ angular.module('travel.services', [])
 
 
   var addToItinerary = function (venueData, fromDate, toDate) {
+
     var data = {
       venue: venueData,
       userId: $rootScope.currentUser._id,
@@ -327,14 +323,11 @@ angular.module('travel.services', [])
     });
   };
 
-
-
-  /*
-    @params {object} query has:
-      @prop {str} groupId
-      @prop {str} userId
-  */
-  var getItinerary = function(query){
+  var getItinerary = function($scope){
+    var query = {
+      userId: $rootScope.currentUser._id,
+      groupId: $rootScope.currentGroup._id
+    };
     return $http({
       method: 'GET',
       url: '/api/rating/itin',
@@ -371,7 +364,7 @@ angular.module('travel.services', [])
     getUserFavorites: getUserFavorites,
     addRating: addRating,
     getItinerary: getItinerary,
-    getRatings: getRatings,
+    setRatings: setRatings,
     addToItinerary: addToItinerary,
     getDetailedVenueInfo: getDetailedVenueInfo
   };
@@ -382,17 +375,36 @@ angular.module('travel.services', [])
 ////////////////// FOR MOREINFO MODAL //////////////////////
 
 
-.factory('MoreInfo', function ($http, $rootScope) {
+.factory('MoreInfo', function ($http, $rootScope, Venues) {
+
+
 
   var initMoreInfoState = function () {
     // sets image carousel interval
     this.myInterval = 5000;
     this.noWrapSlides = false;
+
+    // used by Ratings and Itinerary
     this.ratingsInfo = $rootScope.ratingsInfo;
     this.phoneHide = $rootScope.phoneHide;
   };
 
-  var getDetailedVenueInfo = function (venue) {
+  var getDetailedVenueInfo = function (venueId) {
+    var query = {
+      venueId: venueId
+    };
+    var _this_ = this;
+    Venues.getDetailedVenueInfo(query)
+      .then(function (venueInfo) {
+        $rootScope.detailedInfo = _this_.detailedInfo = venueInfo;
+        _this_.openModal();
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
+  var showDetailedVenueInfo = function (venue) {
     $rootScope.phoneHide = ( venue.venue.telephone ? false : true );
     $rootScope.ratingsInfo = venue;
     this.ratingsInfo = venue;
@@ -409,6 +421,7 @@ angular.module('travel.services', [])
     initMoreInfoState: initMoreInfoState,
 
     getDetailedVenueInfo: getDetailedVenueInfo,
+    showDetailedVenueInfo: showDetailedVenueInfo,
     exit: exit,
   };
 })
