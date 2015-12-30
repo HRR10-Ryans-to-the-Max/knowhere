@@ -1,16 +1,16 @@
 <div>
-	<div class="text-center">
-		<h2>{{detailedInfo.name}}</h2>
-		<div>
-			<p ng-hide="addressHide">{{detailedInfo.address}}</p>
-			<p ng-hide="phoneHide">{{detailedInfo.telephone}}</p>
-			<a href="{{detailedInfo.website}}">{{detailedInfo.website}}</a> <br>
-		</div>
-		<div class="detailed-info">
-			<button class="btn btn-sm btn-primary" type="button" name="button" ng-click="addToRatings(detailedInfo)">Add to Ratings
-			</button>
-		</div>
-	</div>
+  <div class="text-center">
+    <h2>{{detailedInfo.name}}</h2>
+    <div>
+      <p ng-hide="addressHide">{{detailedInfo.address}}</p>
+      <p ng-hide="phoneHide">{{detailedInfo.telephone}}</p>
+      <a href="{{detailedInfo.website}}">{{detailedInfo.website}}</a> <br>
+    </div>
+    <div class="detailed-info">
+      <button class="btn btn-sm btn-primary" type="button" name="button" ng-click="addToRatings(detailedInfo)">Add to Ratings
+      </button>
+    </div>
+  </div>
   <uib-carousel interval="myInterval" no-wrap="noWrapSlides">
     <uib-slide ng-repeat="photo in detailedInfo.photos" active="slide.active">
       <img ng-src="{{photo}}" style="margin:auto;">

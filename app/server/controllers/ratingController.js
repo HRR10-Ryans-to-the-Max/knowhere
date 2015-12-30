@@ -180,7 +180,8 @@ module.exports = {
                   {$set: {'itinerary.fromDate': fromDate, 'itinerary.toDate': toDate}}, function (err, update){
 
       if (err) return util.send500(res, err);
-      if (update.nModified < 0) return util.send400(res, err);
+      if (update.n === 0) return util.send400(res);
+
       sendGroup(groupId, res);
     });
   }

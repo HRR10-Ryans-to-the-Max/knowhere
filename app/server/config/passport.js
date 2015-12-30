@@ -12,7 +12,7 @@ var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: 'zacharysmith4989@gmail.com',
+    user: 'appKnowhere@gmail.com',
     pass: process.env.GMAIL_PASS
   }
 });
@@ -98,7 +98,7 @@ module.exports = function(passport) {
           });
 
           transporter.sendMail({    
-              from: 'zacharysmith4989@gmail.com',
+              from: 'appKnowhere@gmail.com',
               to: newUser.username,
               subject: 'Welcome to Knowhere!',
               html: '<div> Welcome to Knowhere!.  Validate your account by clicking ' +
