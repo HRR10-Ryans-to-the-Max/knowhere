@@ -62,7 +62,7 @@ describe('Server', function () {
         this.timeout(5000);
 
         var mailOptions = {
-            from: 'Fred Foo ✔ <foo@blurdybloop.com>', // sender address
+            from: 'Knowhere ✔ <appKnowhere@gmail.com>', // sender address
             to: 'zacharysmith4989@gmail.com', // list of receivers
             subject: 'Hello ✔', // Subject line
             text: 'Hello world ✔', // plaintext body
