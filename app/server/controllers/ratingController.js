@@ -190,6 +190,41 @@ module.exports = {
 
       sendGroup(groupId, res);
     });
+  },
+
+  removeItin: function (req, res, next) {
+    var groupId = req.query.groupId;
+    var venueId = req.query.venueId;
+
+    Rating.update({groupId: groupId, venue: venueId},
+                  {$set: {itinerary: null}}, function (err, update) {
+      if (err) return util.send500(res, err);
+
+      if (update.nModified) {
+        util.send200(res);
+      } else {
+        util.send400(res, err);
+      }
+    });
+  },
+
+  removeUserRatingFromGroup: function (req, res, next) {
+    var average = req.query.average;
+    var groupId = req.query.groupId;
+    var userId  = req.query.userId;
+    var venueId = req.query.venueId;
+
+    Rating.update({'allRatings.user': userId, groupId: groupId, venue: venueId},
+                  {$pull: {allRatings: {user: userId}},
+                   $set:  {average: average}}, function (err, update) {
+      if (err) return util.send500(res, err);
+
+      if (update.nModified) {
+        util.send200(res);
+      } else {
+        util.send400(res, err);
+      }
+    });
   }
 
   // THE BELOW IS COPY&PASTED FROM FAV CONTROLLER

@@ -103,6 +103,32 @@ angular.module('travel.ratings', ['ui.bootstrap', 'ngAnimate'])
   };
 
 
+  ////////////////// USER REMOVE RATING //////////////////////
+
+
+  $scope.removeUserRatingFromGroup = function (ratingObj) {
+
+    var total = 0;
+    var numberofRatings = 0;
+    ratingObj.allRatings.forEach(function(rating){
+      if (rating.user === $rootScope.currentUser._id) return;
+      if (rating.userRating === 0) return;
+
+      total += rating.userRating;
+      numberofRatings ++;
+    });
+    ratingObj.avgRating = (total / numberofRatings);
+
+    Venues.removeUserRatingFromGroup(ratingObj)
+      .then(function () {
+        Venues.setRatings($scope);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
+
   ////////////////// ADMIN ONLY //////////////////////
 
 

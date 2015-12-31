@@ -48,13 +48,11 @@ module.exports = {
     User.findById(userId)
       .populate('groupIds')
       .exec(function (err, user) {
-        if (!user) return res.status(400).send();
-        if (err) return res.status(500).send();
+        if (!user) return util.send400(res, err);
+        if (err) return util.send500(res, err);
 
         var oldGroup = _.find(user.groupIds, function (groupId) {
-          if (groupId.title === title){
-            return groupId;
-          }
+          return groupId.title === title;
         });
 
         if (oldGroup) {
@@ -68,12 +66,10 @@ module.exports = {
         newGroup.hosts.push(user._id);
         newGroup.members.push(user._id);
         newGroup.save(function (err, group){
-          if (!group) return util.send400(res, err);
           if (err) return util.send500(res, err);
 
           user.groupIds.push(group._id);
           user.save(function (err, user){
-            if (!user) return util.send400(res, err);
             if (err) return util.send500(res, err);
 
             sendGroupInfo(res, group);

@@ -33,6 +33,7 @@
               </div>
               <div>
                 <button ng-show="showInput && isHost" class="btn btn-sm btn-success" type="button" name="button" ng-click="addDatesToItinerary(venue, venue.itinerary.fromDate, venue.itinerary.toDate)">Submit</button>
+                <button ng-show="showInput && isHost" class="btn btn-sm btn-success" type="button" name="button" ng-click="removeFromItinerary(venue)">Remove</button>
                 <button class="btn btn-sm btn-info" type="button" name="button" ng-click="showDetailedVenueInfo(venue)">More Info</button>
               </div>
             </div>

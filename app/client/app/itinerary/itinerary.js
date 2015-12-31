@@ -51,6 +51,42 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
   ////////////////// SHOW FULL ITINERARY //////////////////////
 
 
+  $scope.removeFromItinerary = function(ratingObj) {
+    Venues.removeFromItinerary(ratingObj)
+      .then(function () {
+        $scope.setItinerary();
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
+
+  ////////////////// SHOW FULL ITINERARY //////////////////////
+
+
+  $scope.setItinerary = function() {
+    Venues.getItinerary()
+      .then(function (ratingsObjs) {
+        ratingsObjs.forEach(function(rating) {
+          rating.itinerary.fromDate = new Date(rating.itinerary.fromDate);
+          rating.itinerary.toDate = new Date(rating.itinerary.toDate);
+        });
+        ratingsObjs.sort(function (a, b) {
+          return a.itinerary.fromDate - b.itinerary.fromDate;
+        });
+        $scope.fullItinerary = ratingsObjs;
+        $scope.filterItinerary(1);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
+
+  ////////////////// SHOW FULL ITINERARY //////////////////////
+
+
   $scope.showFullItinerary = function() {
     $scope.heading = "Full Itinerary";
     $rootScope.showInputModal = false;
@@ -71,21 +107,7 @@ angular.module('travel.itinerary', ['ui.bootstrap', 'ngAnimate'])
 //////////////////INIT STATE//////////////////////
 
 
-  Venues.getItinerary()
-    .then(function (ratingsObjs) {
-      ratingsObjs.forEach(function(rating) {
-        rating.itinerary.fromDate = new Date(rating.itinerary.fromDate);
-        rating.itinerary.toDate = new Date(rating.itinerary.toDate);
-      });
-      ratingsObjs.sort(function (a, b) {
-        return a.itinerary.fromDate - b.itinerary.fromDate;
-      });
-      $scope.fullItinerary = ratingsObjs;
-      $scope.filterItinerary(1);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+  $scope.setItinerary();
 
 
 });
