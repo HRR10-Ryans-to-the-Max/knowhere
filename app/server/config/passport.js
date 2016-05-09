@@ -1,7 +1,7 @@
 var LocalStrategy    = require('passport-local').Strategy;
 var GoogleStrategy   = require('passport-google-oauth2').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
-var eventEmitter     = require('./eventEmitter');
+// var eventEmitter     = require('./eventEmitter');
 var User             = require('../models/user');
 var path             = require('path');
 var util             = require(path.join(__dirname, '../util'));
@@ -157,7 +157,7 @@ module.exports = function(passport) {
       done(null, user);
 
       //emit event to begin loading user favorites
-      eventEmitter.emit('getFavInfo', user._id);
+      // eventEmitter.emit('getFavInfo', user._id);
 
     });
   }
@@ -181,7 +181,7 @@ module.exports = function(passport) {
                 
             // check to see if theres already a user with that email
             if (user) {
-              eventEmitter.emit('getFavInfo', user._id);
+              // eventEmitter.emit('getFavInfo', user._id);
               cb(null, user);
             } else {
 
@@ -226,7 +226,7 @@ module.exports = function(passport) {
               
           // check to see if theres already a user with that email
           if (user) {
-            eventEmitter.emit('getFavInfo', user._id);
+            // eventEmitter.emit('getFavInfo', user._id);
             cb(null, user);
           } else {
 

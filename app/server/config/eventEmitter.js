@@ -1,4 +1,5 @@
-// FIXME 
+// FIXME getUserFavInfo() never invoked any of its helper functions.
+
 
 // var async        = require('async');
 // var events       = require('events');
