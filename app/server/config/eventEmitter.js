@@ -1,112 +1,112 @@
-var async        = require('async');
-var events       = require('events');
-var eventEmitter = new events.EventEmitter();
-var path         = require('path');
-var request      = require('superagent');
+// FIXME 
 
-var Rating       = require('../models/rating');
-var User         = require('../models/user');
-var util         = require(path.join(__dirname, '../util'));
-var Venue        = require('../models/venue');
+// var async        = require('async');
+// var events       = require('events');
+// var eventEmitter = new events.EventEmitter();
+// var path         = require('path');
+// var request      = require('superagent');
 
-// =========================================================================
-// Loading User Favs=============================================================
-// =========================================================================
-// Purpose of this file is to pre-load all the venues currently in the user's
-// favorites and all of his group favorites.  This could be many requests so it
-// should get started as soon as a user logs in and not wait until the user wishes
-// to see it.
- 
+// var Rating       = require('../models/rating');
+// var User         = require('../models/user');
+// var util         = require(path.join(__dirname, '../util'));
+// var Venue        = require('../models/venue');
 
-function getUserFavInfo(userId) {
-  User.findById(userId)
-  .exec(function (err, user){
-    if (!user) return;
-    if (err) return;
-    (function(){ // the following is done for synchronous purposes
-      var index = 0;
-      var list = [];
-      var noCopies = {};
-      var numGroups = user.groupIds.length;
+// // =========================================================================
+// // Loading User Favs=============================================================
+// // =========================================================================
+// // Purpose of this file is to pre-load all the venues currently in the user's
+// // favorites and all of his group favorites.  This could be many requests so it
+// // should get started as soon as a user logs in and not wait until the user wishes
+// // to see it.
 
-      function findRatings(){ //combine user favorites and group into single array
-        if (index < numGroups) {
-          Rating.findOne({groupId: user.groupIds[index]}, function (err, rating){
-            if (err || !rating) return;
+// function getUserFavInfo(userId) {
+//   User.findById(userId)
+//   .exec(function (err, user){
+//     if (!user || err) return;
 
-            if (rating.venueId.name) {
-              index += 1;
-              findRatings();
-            } else {
-              list = [rating.venueId.lookUpId, rating.venueId._id];
-              loadVenues();
-            }
-          });
-        }
-      }
+//     // this immediately-invoked function expression is done for synchronous purposes
+//     (function(){
+//       var index = 0;
+//       var list = [];
+//       var noCopies = { };
+//       var numGroups = user.groupIds.length;
 
-      function loadVenues() {
-        async.parallel({ // simultaneously get venue info from api and load venue from DB
-          getInfo: function(callback) {
-            var loadId  = list[0];
-              request.get('http://api.tripexpert.com/v1/venues/' + loadId + '?')
-              .query({
-                api_key: process.env.TRIPEXPERT_KEY
-              })
-              .end(function (err, res) {
-                if (err){
-                  console.log(err);
-                  return;
-                }
-                var text = JSON.parse(res.text);
-                var info = text.response.venue[0];
-                callback(null, JSON.parse(res.text).response.venue[0]);
-              });
-          },
+//       function findRatings(){ //combine user favorites and group into single array
+//         if (index < numGroups) {
+//           Rating.findOne({groupId: user.groupIds[index]}, function (err, rating){
+//             if (err || !rating) return;
 
-          getVenue: function(callback){
-            var venueId = list[1];
-            Venue.findOne({lookUpId: venueId} , function (err, venue){
-              if (!venue) return;
-              if (err) return;
-               
-               //console.log("venue is ", venue);
-               callback(null, venue);
-            });
-          }
-        },
-        function (err, results){
-          var venue = results.getVenue;
-          var info  = results.getInfo;
+//             if (rating.venueId.name) {
+//               index += 1;
+//               findRatings();
+//             } else {
+//               list = [rating.venueId.lookUpId, rating.venueId._id];
+//               loadVenues();
+//             }
+//           });
+//         }
+//       }
 
-          venue.venue_type_id = info.venue_type_id;
-          venue.name = info.name;
-          venue.tripexpert_score = info.tripexpert_score;
-          venue.rank_in_destination = info.rank_in_destination;
-          venue.address = info.address;
-          venue.telephone = info.telephone;
-          venue.website = info.website;
-          venue.index_photo = info.index_photo;
-          venue.photos = info.photos;
-          venue.amenities = info.amenities;
+//       function loadVenues(){
+//         async.parallel({ // simultaneously get venue info from api and load venue from DB
+//           getInfo: function(callback) {
+//             var loadId  = list[0];
+//               request.get('http://api.tripexpert.com/v1/venues/' + loadId + '?')
+//               .query({
+//                 api_key: process.env.TRIPEXPERT_KEY
+//               })
+//               .end(function (err, res) {
+//                 if (err) return console.error(err);
+//                 var text = JSON.parse(res.text);
+//                 var info = text.response.venue[0];
 
-          venue.save();
+//                 callback(null, JSON.parse(res.text).response.venue[0]);
+//               });
+//           },
 
-          if (index < length){
-            index++;
-            findRatings();
-          }
-        });
-      }
-    })();
-  });
-}
+//           getVenue: function(callback){
+//             var venueId = list[1];
+//             Venue.findOne({lookUpId: venueId} , function (err, venue){
+//               if (!venue || err) return;
 
-function cleanUp() {
-  //TODO make sure references are being deleted
-}
+//               callback(null, venue);
+//             });
+//           }
+//         },
+//         function (err, results){
+//           if (err || !results) return console.error(err);
+//           var venue = results.getVenue;
+//           var info  = results.getInfo;
 
-eventEmitter.addListener('getFavInfo', getUserFavInfo);
+//           venue.venue_type_id = info.venue_type_id;
+//           venue.name = info.name;
+//           venue.tripexpert_score = info.tripexpert_score;
+//           venue.rank_in_destination = info.rank_in_destination;
+//           venue.address = info.address;
+//           venue.telephone = info.telephone;
+//           venue.website = info.website;
+//           venue.index_photo = info.index_photo;
+//           venue.photos = info.photos;
+//           venue.amenities = info.amenities;
 
-module.exports = eventEmitter;
+//           venue.save();
+
+//           // FIXME length is undefined
+//           // if (index < length){
+//           //   index++;
+//           //   findRatings();
+//           // }
+//         });
+//       }
+//     })();
+//   });
+// }
+
+// // function cleanUp() {
+// //   //TODO make sure references are being deleted
+// // }
+
+// eventEmitter.addListener('getFavInfo', getUserFavInfo);
+
+// module.exports = eventEmitter;
 
