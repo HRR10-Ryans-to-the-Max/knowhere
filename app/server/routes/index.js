@@ -6,9 +6,6 @@ var indexController = require(path.join(__dirname, '../controllers/indexControll
 
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', indexController.getIndex);
-
 router.get('/info', indexController.getInfo);
 
 router.post('/validate', indexController.validateUser);

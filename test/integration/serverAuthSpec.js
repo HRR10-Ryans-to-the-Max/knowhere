@@ -30,6 +30,15 @@ describe('Auth', function () {
 
   describe('local strategy', function () {
 
+    it('isLoggedIn() responds with false if !req.isAuthenticated', function (done) {
+      request
+        .get('/api/auth/check')
+        .end(function (err, res) {
+          expect(res.body.status).to.equal(false);
+          done();
+        });
+    });
+
     it('/api/auth/signup returns a new user object', function (done) {
       request
         .post('/api/auth/signup')
@@ -70,7 +79,6 @@ describe('Auth', function () {
     });
 
     describe('/api/auth/login', function () {
-      
       beforeEach(function (done) {
         request
           .post('/api/auth/signup')

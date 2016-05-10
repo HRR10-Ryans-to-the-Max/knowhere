@@ -117,7 +117,7 @@ describe('server controllers', function () {
   });
 
   // Leave pending so no calls are made to TripExpert's API
-  xdescribe('destController', function () {
+  describe('destController', function () {
 
     describe('getDestinations()', function () {
 
@@ -280,7 +280,7 @@ describe('server controllers', function () {
       });
     });
 
-    xdescribe('getMembers()', function () {
+    describe('getMembers()', function () {
 
       beforeEach(function (done) {
         request
@@ -399,6 +399,15 @@ describe('server controllers', function () {
 
   describe('indexController', function () {
 
+    it('getIndex() returns index page', function (done) {
+      request
+        .get('/api/')
+        .end(function (err, res) {
+          expect(res.text).to.include('Knowhere | 2015'); // index title
+          done();
+        });
+    });
+
     it('getInfo() returns user info', function (done) {
       request
         .get('/api/info')
@@ -411,11 +420,27 @@ describe('server controllers', function () {
         });
     });
 
-    it('isLoggedIn() responds with false if !req.isAuthenticated', function (done) {
+    it('validateUser() should return code 400 when user does not exist', function (done) {
       request
-        .get('/api/auth/check') // indexController#isLoggedIn
+        .post('/api/validate')
+        .send({
+          id: -1
+        })
         .end(function (err, res) {
-          expect(res.body.status).to.equal(false);
+          expect(res.statusCode).to.equal(400);
+          done();
+        });
+    });
+
+    it('validateUser() should return user when user exists', function (done) {
+      request
+        .post('/api/validate')
+        .send({
+          id: testUser.id
+        })
+        .end(function (err, res) {
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.username).to.equal(testUser.username);
           done();
         });
     });

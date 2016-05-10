@@ -58,7 +58,7 @@ describe('Server', function () {
       // The test below requires process.env.GMAIL_PASS
       // For now, TravisCI does not have access to it.
       // So, keep this test pending
-      xit('should provide nodemailer\'s sendMail function', function (done) {
+      it('should provide nodemailer\'s sendMail function', function (done) {
         this.timeout(5000);
 
         var mailOptions = {
@@ -70,11 +70,11 @@ describe('Server', function () {
         };
 
         util.mailer.sendMail(mailOptions, function (err, info) {
-          if (err) return console.error(err);
+          if (err) console.error(err);
 
           // 250 is the SMTP reply code for mail action okay
           // See more: http://www.greenend.org.uk/rjk/tech/smtpreplies.html
-          expect(/250/.test(info.response));
+          expect(info.response).to.include('250')
           done();
         });
       });

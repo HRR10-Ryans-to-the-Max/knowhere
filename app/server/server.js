@@ -7,7 +7,7 @@ var passport     = require('passport');
 var flash        = require('connect-flash');
 var session      = require('express-session');
 var MongoStore   = require('connect-mongo/es5')(session);
-var mongoose     = require('mongoose'); 
+var mongoose     = require('mongoose');
 var morgan       = require('morgan');
 var cors         = require('cors');
 
@@ -41,7 +41,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 // required for passport
 app.use(session({
-  secret: 'tripAppIsAmazing', 
+  secret: 'tripAppIsAmazing',
   store: new MongoStore({ mongooseConnection: mongoose.connection }),
   cookie: { maxAge: 3600000}}));
 
@@ -49,10 +49,8 @@ require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
- // pass passport for configuration
 
 // Server routing:
-
 app.use('/api', index);
 app.use('/api/auth', auth);
 app.use('/api/dest', dest);

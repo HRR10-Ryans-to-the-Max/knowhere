@@ -199,47 +199,27 @@ module.exports = {
   getGroups: function (req, res, next){
     var userId = req.query.userId;
 
-  //  https://github.com/buunguyen/mongoose-deep-populate#changelog
-  //   User.findById(userId)
-  //   .deepPopulate('groupIds.members groupIds.favorites')
-  //   .exec(function (err, user){
-  //     console.log(user.groupIds);
-  //     if (err) return util.send500(res, err);
-
-  //     var data = ( user ? user.groupIds : null );
-
-
-  //     util.send200(res, data);
-  //   })
-
-    
     User.findOne({_id: userId})
-    // .populate({
-    //   path:'groupIds',
-    //   populate: {path: 'members ', select: 'username firstName lastName', model: 'User'},
-    //   populate: {path: 'hosts', select: 'username firstName lastName', model: 'User'}
-    // })
-    .populate({
-      path: 'groupIds',
-      populate: {path: 'favorites', select: 'venue', model: 'Rating',
-                populate: {path: 'venue', select: 'name index_photo', model: 'Venue'}},
-    })
-    .exec(function (err, person){
-      User.populate(
-        person,
-        {path: 'groupIds.members ', select: 'username firstName lastName', model: 'User'}, function (err, person) {
+      .populate({
+        path: 'groupIds',
+        populate: {path: 'favorites', select: 'venue', model: 'Rating',
+                  populate: {path: 'venue', select: 'name index_photo', model: 'Venue'}},
+      })
+      .exec(function (err, person){
         User.populate(
           person,
-          {path: 'groupIds.hosts', select: 'username firstName lastName', model: 'User'}, function (err, person){
-            //console.log(person.groupIds);
+          {path: 'groupIds.members ', select: 'username firstName lastName', model: 'User'}, function (err, person) {
+          User.populate(
+            person,
+            {path: 'groupIds.hosts', select: 'username firstName lastName', model: 'User'}, function (err, person){
 
-          var data = ( person ? person.groupIds : null );
+            var data = ( person ? person.groupIds : null );
 
 
-          util.send200(res, data);
+            util.send200(res, data);
+          });
         });
       });
-    });
   },
 
   getInfo: function(req, res, next){
@@ -256,11 +236,7 @@ module.exports = {
           if (!group) return util.send400(res, err);
           console.log(group);
 
-          util.send200(res, group);         
+          util.send200(res, group);
         });
-  },
-
-  setHost: function(req, res, next){
-
   }
 };
