@@ -12,7 +12,7 @@ var testUtil = require(path.join(__dirname, '../testUtil'));
 var util = require(path.join(__dirname, '../../app/server/util'));
 
 
-describe('Server', function () {
+xdescribe('Server', function () {
 
   var con;
 

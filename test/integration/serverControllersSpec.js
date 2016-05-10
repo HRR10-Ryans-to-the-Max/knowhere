@@ -88,6 +88,7 @@ describe('server controllers', function () {
 
             greenwichHotel = greenwichHotel;
 
+            // create test group
             request
               .post('/api/group')
               .send({
@@ -96,10 +97,22 @@ describe('server controllers', function () {
                 userId: testUser._id,
               })
               .end(function (err, res) {
-
                 group = res.body;
-                done();
-              });
+
+                // create test rating
+                request
+                  .post('/api/rating/')
+                  .send({
+                    venue: greenwichHotel,
+                    groupId: group._id,
+                    userId: testUser._id,
+                    rating: 5
+                  })
+                  .end(function (err, res) {
+                    if (err) console.error(err);
+                    done();
+                  });
+            });
           });
         });
       });
@@ -117,7 +130,7 @@ describe('server controllers', function () {
   });
 
   // Leave pending so no calls are made to TripExpert's API
-  describe('destController', function () {
+  xdescribe('destController', function () {
 
     describe('getDestinations()', function () {
 
@@ -399,15 +412,6 @@ describe('server controllers', function () {
 
   describe('indexController', function () {
 
-    it('getIndex() returns index page', function (done) {
-      request
-        .get('/api/')
-        .end(function (err, res) {
-          expect(res.text).to.include('Knowhere | 2015'); // index title
-          done();
-        });
-    });
-
     it('getInfo() returns user info', function (done) {
       request
         .get('/api/info')
@@ -481,7 +485,7 @@ describe('server controllers', function () {
               expect(c).to.equal(1);
 
               User.findById(testUser._id, function (err, user) {
-                expect(user.favorites.length).to.equal(1);
+                expect(user.favorites.length).to.equal(2); // other favorite added in beforeEach()
                 done();
               });
             });
@@ -646,7 +650,23 @@ describe('server controllers', function () {
                   });
               });
           });
-        
+      });
+    });
+
+    describe('getRatings()', function () {
+
+      it('should get group\'s favorites', function (done) {
+        request
+          .get('/api/rating/')
+          .query({ groupId: group._id })
+          .end(function (err, res) {
+            if (err) return done(err);
+            var favorites = res.body;
+
+            expect(favorites.length).to.equal(1);
+            expect(favorites[0].groupId).to.equal(group._id);
+            done();
+          });
       });
     });
   });

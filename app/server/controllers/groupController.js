@@ -30,9 +30,8 @@ sendGroupInfo = function (res, groupId){
   .exec(function (err, group){
     if (!group) return util.send400(res, err);
     if (err) return util.send500(res, err);
-    console.log(group);
-    return util.send200(res, group);
 
+    return util.send200(res, group);
   });
 };
 
@@ -232,9 +231,8 @@ module.exports = {
           populate: {path: 'venue'}
         })
         .exec(function (err, group){
-          if (err) return util.send500(res, err);
           if (!group) return util.send400(res, err);
-          console.log(group);
+          if (err) return util.send500(res, err);
 
           util.send200(res, group);
         });

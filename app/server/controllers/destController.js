@@ -64,7 +64,7 @@ module.exports = {
 
           // redis.set(destinationId, JSON.stringify(response.body.response.venues));
           // redis.expireat(destinationId, parseInt((+new Date)/1000) + 86400);
-          return res.status(200).send(response.body.response.venues);       
+          return res.status(200).send(response.body.response.venues);
         });
     //   }
     // })
@@ -90,7 +90,7 @@ module.exports = {
   loadDests: function () {
 
     function StupidJSHint(err, dest){
-      if (err) console.log(err);
+      if (err) console.error(err);
     }
 
     request.get('http://api.tripexpert.com/v1/destinations?api_key=' + process.env.TRIPEXPERT_KEY)

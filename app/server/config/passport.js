@@ -49,7 +49,7 @@ module.exports = function(passport) {
   // we are using named strategies since we have one for login and one for signup
   // by default, if there was no name, it would just be called 'local'
 
-  passport.use('local-signup', new LocalStrategy({    
+  passport.use('local-signup', new LocalStrategy({
       usernameField : 'username',
       passwordField : 'password',
       passReqToCallback: true
@@ -66,15 +66,15 @@ module.exports = function(passport) {
       User.findOne({ 'username' :  username }, function(err, user) {
         // if there are any errors, return the error
         if (err) {
-          console.log(err);
+          console.error(err);
           cb(err);
         }
-      
+
         // check to see if theres already a user with that email
         // also check to see if they signed up already with facebook or google
         if (user) {
             if (user.oauth !== true) {
-              cb(null, false, {message: "Username already exists"}); 
+              cb(null, false, {message: "Username already exists"});
             } else {
               user.firstName = req.first;
               user.lastName = req.last;
@@ -82,7 +82,7 @@ module.exports = function(passport) {
               user.save();
               cb(null, user);
             }
-        } else { 
+        } else {
           var newUser = new User();
           // set the user's local credentials
           newUser.firstName = req.body.first;
@@ -92,22 +92,19 @@ module.exports = function(passport) {
 
           // save the user
           newUser.save(function(err, user) {
-            console.log(newUser);
-            if (err) {
-              throw err;
-            }
+            if (err) throw err;
             cb(null, newUser);
           });
 
-          transporter.sendMail({    
+          transporter.sendMail({
               from: 'appKnowhere@gmail.com',
               to: newUser.username,
               subject: 'Welcome to Knowhere!',
               html: '<div> Welcome to Knowhere!.  Validate your account by clicking ' +
               ' <a href=' + PROTOCOL_DOMAIN + '/#/validate?id=' + newUser._id + '>here!</a></div>'
           });
-        }  
-      });    
+        }
+      });
     });
   }));
 
@@ -135,12 +132,12 @@ module.exports = function(passport) {
       }
 
       // if no user is found, return the message
-      if (!user){        
+      if (!user){
         return done(null, false, {message: 'No user found'});
       }
 
       // check to see if they used oauth previously and no password was set
-      if (user.password === undefined){ 
+      if (user.password === undefined){
         return done(null, false, {message: "Looks like that email previously signed in using a 3rd party - " +
                                  "create an account to set a password"});
       }
@@ -167,14 +164,14 @@ module.exports = function(passport) {
     },
     function(accessToken, refreshToken, profile, cb) {
       process.nextTick(function() {
-   
+
         User.findOne({ 'username' :  profile.emails[0].value }, function(err, user) {
             // if there are any errors, return the error
             if (err) {
-              console.log(err);
+              console.error(err);
               cb(err);
             }
-                
+
             // check to see if theres already a user with that email
             if (user) {
               // eventEmitter.emit('getFavInfo', user._id);
@@ -196,7 +193,7 @@ module.exports = function(passport) {
 
               });
             }
-        });    
+        });
       });
     }
   ));
@@ -211,15 +208,14 @@ module.exports = function(passport) {
   function(accessToken, refreshToken, profile, cb) {
     process.nextTick(function() {
 
-      console.log(profile);
       //TODO they might not have email - if so -login with id
       User.findOne({ 'username' :  profile.emails[0].value }, function(err, user) {
           // if there are any errors, return the error
           if (err) {
-            console.log(err);
+            console.error(err);
             cb(err);
           }
-              
+
           // check to see if theres already a user with that email
           if (user) {
             // eventEmitter.emit('getFavInfo', user._id);
@@ -233,7 +229,7 @@ module.exports = function(passport) {
             // set the user's local credentials
             newUser.username    = profile.emails[0].value;
             newUser.oauth       = true;
-            
+
 
             // save the user
             newUser.save(function(err, user) {
@@ -242,7 +238,7 @@ module.exports = function(passport) {
 
             });
           }
-       });    
+       });
      });
     }
   ));

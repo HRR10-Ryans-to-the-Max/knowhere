@@ -105,7 +105,6 @@ var updateUserRating = function (paramHash) {
 module.exports = {
 
   addOrUpdateRating: function(req, res, next){
-    console.log(req.body.venue);  //add to user and group favorites
     var venueInfo = req.body.venue;
     // If we are getting just the TripExpert object, then .lookUpId is undefined
     venueInfo.lookUpId = venueInfo.lookUpId || venueInfo.id;
