@@ -34,10 +34,7 @@ angular.module('signin', ['ui.bootstrap'])
 
   $scope.validate = function(){
     var user = $location.search().id;
-    AuthMe.validateUser(user)
-      .then(function (data){
-        console.log(data);
-      });
+    AuthMe.validateUser(user);
   };
 
   $scope.onLoad = function() {

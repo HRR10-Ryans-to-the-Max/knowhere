@@ -17,15 +17,12 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-//process.env.GMAIL_PASS
-
 
 var PROTOCOL_DOMAIN  = ( process.env.NODE_ENV === 'production' ?
                         'https://knowhere.herokuapp.com' :
                         'http://localhost:3000' );
 
 
-// expose this function to our app using module.exports
 module.exports = function(passport) {
 
   // =========================================================================
@@ -131,7 +128,6 @@ module.exports = function(passport) {
 
     // find a user whose username is the same as the forms username
     // we are checking to see if the user trying to login already exists
-    console.log("is this triggering");
     User.findOne({ 'username' :  username }, function(err, user) {
       // if there are any errors, return the error before anything else
       if (err) {

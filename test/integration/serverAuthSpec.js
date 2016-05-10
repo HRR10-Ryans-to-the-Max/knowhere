@@ -29,7 +29,7 @@ describe('Auth', function () {
   });
 
   describe('local strategy', function () {
-    
+
     it('/api/auth/signup returns a new user object', function (done) {
       request
         .post('/api/auth/signup')

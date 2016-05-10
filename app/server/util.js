@@ -1,20 +1,20 @@
-// var nodemailer = require('nodemailer');
+var nodemailer = require('nodemailer');
 
 
-// var transporter = nodemailer.createTransport({
-//   service: 'Gmail',
-//   auth: {
-//     user: 'appKnowhere@gmail.com',
-//     pass: process.env.GMAIL_PASS
-//   }
-// });
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'appKnowhere@gmail.com',
+    pass: process.env.GMAIL_PASS
+  }
+});
 
 
 module.exports = {
-  
-  // mailer: {
-  //   sendMail: transporter.sendMail.bind(transporter)
-  // },
+
+  mailer: {
+    sendMail: transporter.sendMail.bind(transporter)
+  },
 
   send200: function (res, data) {
     if (data) {

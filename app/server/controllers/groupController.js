@@ -13,7 +13,6 @@ var venues = require("../../../mock-data/venues.json");
 var venue  = venues.Results;
 
 sendGroupInfo = function (res, groupId){
-  console.log("sendGroupInfo triggered");
   Group.findById(groupId)
   .populate({
     path: 'members',
